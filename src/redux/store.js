@@ -6,7 +6,8 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import history from 'redux/history';
 
-import { name as conversationsReducerName, reducer as conversationsReducer } from 'redux/api/conversations/conversations';
+import { name as conversationsName, reducer as conversationsReducer } from 'redux/api/conversations/conversations';
+import { name as meName, reducer as meReducer } from 'redux/api/me/me';
 
 const middleware = [ // Order dependent
   thunk, // Enables actions to return functions
@@ -25,7 +26,8 @@ if (process.env.NODE_ENV === 'production') {
 const store = createStore(
   combineReducers({
     router: connectRouter(history),
-    [conversationsReducerName]: conversationsReducer
+    [conversationsName]: conversationsReducer,
+    [meName]: meReducer
   }),
   reduxCompose
 );

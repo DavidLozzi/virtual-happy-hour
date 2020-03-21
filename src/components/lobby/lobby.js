@@ -1,61 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import CONFIG from 'config';
 import { name as ConvoName, actions as ConvoActions } from 'redux/api/conversations/conversations';
+import { name as MeName } from 'redux/api/me/me';
+
+
+import EntryForm from 'components/entryform/entryform';
+import Jitsi, { JitsiSubject } from 'components/jitsi/jitsi';
+import CreateConversation, { addConvo } from 'components/createconversation/createconversation';
 
 const Lobby = ({ match }) => {
   const dispatch = useDispatch();
   const roomName = match.params.roomName;
-  const defaultWidth = 300;
-  const defaultHeight = 300;
   const conversations = useSelector(state => state[ConvoName].conversations);
-  const [convoCounter, setConvoCounter] = useState(0);
+  const myEmail = useSelector(state => state[MeName].email);
+  const myName = useSelector(state => state[MeName].name);
   const [convoApis, setConvoApis] = useState([]);
   const [enlargeConvo, setEnlargeConvo] = useState(null);
   const [loadRoom, setLoadRoom] = useState(false);
-  const [myName, setMyName] = useState('');
-  const [chats, setChats] = useState([]);
-  const [createConvo, setCreateConvo] = useState(false);
-  const [newConvoName, setNewConvoName] = useState('');
   const [currentConvo, setCurrentConvo] = useState(null);
-
-  const createConversationOptions = () => ({
-    height: defaultHeight,
-    width: defaultWidth,
-    generateRoom: true,
-    roomNumber: convoCounter,
-    roomName: `${roomName}-${convoCounter}`,
-    roomTitle: newConvoName,
-    roomCss: '',
-    canResize: true,
-    participants: []
-  });
 
   const openRoom = () => {
     setLoadRoom(true);
   };
 
-  const createRoomDone = () => {
-    setNewConvoName('');
-    setCreateConvo(false);
+  const onConvoCreate = (convo) => {
+    setCurrentConvo(convo);
   };
 
-  const createNewConversationClick = () => {
-    addConvo(createConversationOptions(), myName);
-    createRoomDone();
-  };
-
-  const createNewConversationOtherClick = () => {
-    addConvo(Object.assign(createConversationOptions()), 'Luke Skywalker');
-    createRoomDone();
-  };
-
-  const addConvo = (options, name) => {
-    ConvoActions.add(options, name)(dispatch);
+  const defaultJitsiCommands = {
+    toggleAudio: true,
+    displayName: myName
   };
 
   const joinConvo = (convo) => {
-    ConvoActions.addParticipant(convo, myName)(dispatch);
+    ConvoActions.addParticipant(convo, myEmail)(dispatch);
     removeFromAllOtherConvos(convo);
     setCurrentConvo(convo);
     setTimeout(() => setEnlargeConvo(convo), 1000);
@@ -70,29 +50,9 @@ const Lobby = ({ match }) => {
   };
 
   const removeMeFromThisConvo = (convo) => {
-    ConvoActions.removeParticipant(convo, myName)(dispatch);
+    ConvoActions.removeParticipant(convo, myEmail)(dispatch);
     if (currentConvo.roomName === convo.roomName) setCurrentConvo(null);
   }
-
-  useEffect(() => {
-    const createLobby = () => {
-      const options = Object.assign(
-        createConversationOptions(),
-        { // override the typical convo settings for the main lobby
-          height: 600,
-          width: 800,
-          roomName,
-          roomTitle: `The Lobby for ${roomName}`,
-          roomCss: { display: 'block' },
-          canResize: false
-        }
-      );
-      addConvo(options, myName);
-    };
-
-    if (loadRoom) createLobby();
-
-  }, [loadRoom]);
 
   const muteStatusChanged = (convo, muted) => {
     console.log('muted', muted, convo.roomName);
@@ -112,37 +72,41 @@ const Lobby = ({ match }) => {
       })
   }
 
-  const amIInThisConvo = (convo) => convo.participants.find(p => p === myName);
+  const amIInThisConvo = (convo) => convo.participants.find(p => p === myEmail);
+
+  const addConvoApi = (options, api) => {
+    console.log('checking on api', options.roomName);
+    const apis = convoApis;
+    if (apis && !apis.find(o => o.roomName === options.roomName)) {
+      apis.push({ roomName: options.roomName, api });
+      console.log('added api', options.roomName);
+      setConvoApis(apis);
+    }
+  };
+
+  JitsiSubject.subscribe({
+    next: ({ options, api }) => addConvoApi(options, api)
+  });
 
   useEffect(() => {
-    setTimeout(() => {
-      const convo = conversations.filter(c => c.roomNumber === convoCounter)[0];
-
-      if (convo) {
-        const newOptions = Object.assign(convo,
-          {
-            generateRoom: false,
-            parentNode: document.getElementById(convo.roomName)
-          }
-        );
-
-        if (amIInThisConvo(convo)) {
-          // eslint-disable-next-line no-undef
-          const api = new JitsiMeetExternalAPI('meet.jit.si', newOptions);
-          api.executeCommands({
-            toggleAudio: true,
-            displayName: myName
-          })
-
-          api.addEventListener('audioMuteStatusChanged', ({ muted }) => muteStatusChanged(convo, muted))
-          setConvoApis(a => a.concat({ roomName: convo.roomName, api }));
-          setConvoCounter(convoCounter + 1);
-          setChats(c => c.concat(api));
+    const createLobby = () => {
+      const options = Object.assign(
+        CONFIG.CONVERSATION_DEFAULTS(0, roomName, `Lobby for ${roomName}`),
+        { // override the typical convo settings for the main lobby
+          height: 600,
+          width: 800,
+          roomCss: { display: 'block' },
+          canResize: false
         }
-      }
-    }, 500);
-  }, [conversations, convoCounter, currentConvo]);
+      );
+      addConvo(options, myEmail, dispatch);
+      setCurrentConvo(options);
+    };
 
+    if (loadRoom) createLobby();
+
+  }, [loadRoom]);
+  
   useEffect(() => {
     if (enlargeConvo) {
       const iFrame = document.getElementById(enlargeConvo.roomName).getElementsByTagName('iframe')[0];
@@ -153,42 +117,27 @@ const Lobby = ({ match }) => {
         .filter(c => c.canResize)
         .forEach(convo => {
           const iFrame = document.getElementById(convo.roomName).getElementsByTagName('iframe')[0];
-          iFrame.style.width = `${defaultWidth}px`;
-          iFrame.style.height = `${defaultHeight}px`;
+          iFrame.style.width = `${CONFIG.CONVERSATION_DEFAULTS.width}px`;
+          iFrame.style.height = `${CONFIG.CONVERSATION_DEFAULTS.height}px`;
         })
     }
   }, [enlargeConvo]);
 
+
   return (
     <div style={{ textAlign: 'center' }}>
       {!loadRoom &&
-        <div>
-          <h3>To join the {roomName} room, please provide:</h3>
-            Name:
-            <input value={myName} onChange={e => setMyName(e.target.value)} />
-          <button onClick={openRoom}>Let's do this</button>
-        </div>
+        <EntryForm roomName={roomName} onOpen={openRoom} />
       }
       {loadRoom &&
         <>
-          <div>
-            {!createConvo &&
-              <button onClick={() => { setCreateConvo(true); setNewConvoName(`Convo with ${myName}`); }}>Create New Convo</button>
-            }
-            {createConvo &&
-              <>
-                Name: <input value={newConvoName} onChange={e => setNewConvoName(e.target.value)} />
-                <button onClick={createNewConversationClick}>Create new Conversation</button>
-                <button onClick={createNewConversationOtherClick}>Another User Creates Conversation</button>
-              </>
-            }
-          </div>
+          {conversations[0] && <CreateConversation onCreate={onConvoCreate} roomName={roomName} />}
           <div className="conversations">
             {conversations.map(convo => {
               const isSelected = enlargeConvo && enlargeConvo.roomName === convo.roomName;
               let roomCss = Object.assign({ display: 'inline-block', margin: '10px' }, convo.roomCss);
               if (isSelected) {
-                roomCss = Object.assign(roomCss, { position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh', backgroundColor: 'white' })
+                roomCss = Object.assign(roomCss, { position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh', backgroundColor: '#ddddff' })
               }
               const imInThisConvo = amIInThisConvo(convo);
               return (
@@ -196,13 +145,13 @@ const Lobby = ({ match }) => {
                   {isSelected && <button onClick={() => setEnlargeConvo(null)}>close</button>}
                   <h3>{convo.roomTitle}</h3>
                   {!isSelected && convo.canResize && imInThisConvo && <button onClick={() => setEnlargeConvo(convo)}>enlarge</button>}
-                  {imInThisConvo && convo.generateRoom ? 'loading...' : null}
-                  {imInThisConvo && <div id={convo.roomName} />}
+                  {imInThisConvo && convo.loading ? 'loading...' : null}
+                  {imInThisConvo && <Jitsi options={{...convo}} commands={defaultJitsiCommands} />}
                   {!imInThisConvo && <button onClick={() => joinConvo(convo)}>join the conversation</button>}
                   <h4>Who's here:</h4>
                   {imInThisConvo && 'Me'}
                   {convo.participants
-                    .filter(p => p !== myName)
+                    .filter(p => p !== myEmail)
                     .map((parti => (
                       <div key={parti}>{parti}</div>
                     )))}

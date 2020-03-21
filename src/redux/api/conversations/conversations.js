@@ -1,5 +1,3 @@
-import store from 'redux/store';
-
 export const API_CONVERSATIONS_ADD_PENDING = 'API_CONVERSATIONS_ADD_PENDING';
 export const API_CONVERSATIONS_ADD_SUCCESS = 'API_CONVERSATIONS_ADD_SUCCESS';
 export const API_CONVERSATIONS_ADD_FAILED = 'API_CONVERSATIONS_ADD_FAILED';
@@ -8,7 +6,7 @@ export const API_CONVERSATIONS_PARTICIPANT_SUCCESS = 'API_CONVERSATIONS_PARTICIP
 export const API_CONVERSATIONS_PARTICIPANT_FAILED = 'API_CONVERSATIONS_PARTICIPANT_FAILED';
 export const API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING';
 export const API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS';
-export const API_CONVERSATIONS_DELETE_FAILED = 'API_CONVERSATIONS_DELETE_FAILED';
+export const API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED';
 
 export const name = 'conversations';
 
@@ -49,7 +47,7 @@ export function reducer(state = initialState, action) {
         error: false,
         errorMessage: ''
       };
-    case API_CONVERSATIONS_DELETE_FAILED:
+    case API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED:
     case API_CONVERSATIONS_PARTICIPANT_FAILED:
     case API_CONVERSATIONS_ADD_FAILED:
       return {
@@ -67,6 +65,7 @@ export function reducer(state = initialState, action) {
           ...state.conversations,
           {
             ...action.conversation,
+            loading: false,
             participants: [
               ...action.conversation.participants,
               action.participant
