@@ -1,0 +1,27 @@
+body {
+  background-color: #333;
+  color: #fff;
+}
+.convoWrapper {
+  display: inline-table;
+  margin: 10px;
+  background-color: #3f4e3f;
+  min-width: 350px;
+  min-height: 500px;
+  padding: 8px;
+}
+
+.lobbyWrapper {
+  width: 100%;
+  margin: 0;
+}
+
+.enlargedWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #3f3f4e;
+  margin: 0;
+}

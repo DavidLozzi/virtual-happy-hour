@@ -1,13 +1,15 @@
 export default {
-  CONVERSATION_DEFAULTS: (roomNumber, roomName, roomTitle) => ({
+  CONVERSATION_DEFAULTS: (convoNumber, roomName, roomTitle) => ({
     height: 300,
     width: 300,
-    roomNumber,
-    roomName: `lozzi-${roomName}-${roomNumber}`,
+    convoNumber,
+    roomName: `lozzi-${roomName}-${convoNumber}`, // actually this is convo name, but Jitsi calls it rooms
+    lobbyName: roomName,
     loading: true,
-    roomTitle: roomTitle,
+    roomTitle,
     roomCss: '',
     canResize: true,
+    hosts: [],
     participants: []
   })
 }

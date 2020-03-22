@@ -1,3 +1,8 @@
+import mySocket from 'components/sockets/mySocket';
+
+export const API_CONVERSATIONS_LOAD_PENDING = 'API_CONVERSATIONS_LOAD_PENDING';
+export const API_CONVERSATIONS_LOAD_SUCCESS = 'API_CONVERSATIONS_LOAD_SUCCESS';
+export const API_CONVERSATIONS_LOAD_FAILED = 'API_CONVERSATIONS_LOAD_FAILED';
 export const API_CONVERSATIONS_ADD_PENDING = 'API_CONVERSATIONS_ADD_PENDING';
 export const API_CONVERSATIONS_ADD_SUCCESS = 'API_CONVERSATIONS_ADD_SUCCESS';
 export const API_CONVERSATIONS_ADD_FAILED = 'API_CONVERSATIONS_ADD_FAILED';
@@ -11,33 +16,52 @@ export const API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED = 'API_CONVERSATIONS_PA
 export const name = 'conversations';
 
 const initialState = {
-  theRoom: {},
+  room: {},
   conversations: [],
   loading: true,
   error: false,
   errorMessage: ''
 };
 
+// TODO Need some level of error handling here
+
 export const actions = {
-  add: (conversation, participant) => async (dispatch) => {
+  getFromApi: (roomName) => async (dispatch) => {
+    dispatch({ type: API_CONVERSATIONS_LOAD_PENDING });
+    mySocket.emit('SetRoom', roomName);
+    mySocket.on('RoomDetails', room => {
+      // mySocket.off('RoomDetails'); // TODO not sure i like this, but didn't want to bog down the reducer ever 500ms
+      dispatch({ type: API_CONVERSATIONS_LOAD_SUCCESS, room })
+    });
+  },
+  add: (conversation, participant) => async (dispatch, getState) => {
     dispatch({ type: API_CONVERSATIONS_ADD_PENDING });
 
-    dispatch({ type: API_CONVERSATIONS_ADD_SUCCESS, conversation, participant });
+    // const room = getState().state.room;
+    const newConvo = Object.assign(conversation, { participants: [participant], hosts: [participant] });
+    mySocket.emit('NewConvo', newConvo, (conversations) => {
+      dispatch({ type: API_CONVERSATIONS_ADD_SUCCESS, conversations });
+    });
   },
   addParticipant: (conversation, participant) => async (dispatch) => {
     dispatch({ type: API_CONVERSATIONS_PARTICIPANT_PENDING });
 
-    dispatch({ type: API_CONVERSATIONS_PARTICIPANT_SUCCESS, conversation, participant });
+    mySocket.emit('AddParticipant', { roomName: conversation.roomName, participant }, (conversations) => {
+      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_SUCCESS, conversations });
+    });
   },
-  removeParticipant: (conversation, participant) => async (dispatch) => {
+  removeMeFromOtherConvos: (conversation, participant) => async (dispatch) => {
     dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING });
 
-    dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS, conversation, participant });
+    mySocket.emit('RemoveFromOtherConvos', { roomName: conversation.roomName, participant }, (conversations) => {
+      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS, conversations });
+    })
   }
 };
 
 export function reducer(state = initialState, action) {
   switch (action.type) {
+    case API_CONVERSATIONS_LOAD_PENDING:
     case API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING:
     case API_CONVERSATIONS_PARTICIPANT_PENDING:
     case API_CONVERSATIONS_ADD_PENDING:
@@ -47,6 +71,7 @@ export function reducer(state = initialState, action) {
         error: false,
         errorMessage: ''
       };
+    case API_CONVERSATIONS_LOAD_FAILED:
     case API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED:
     case API_CONVERSATIONS_PARTICIPANT_FAILED:
     case API_CONVERSATIONS_ADD_FAILED:
@@ -56,50 +81,22 @@ export function reducer(state = initialState, action) {
         error: true,
         errorMessage: action.payload
       };
-    case API_CONVERSATIONS_ADD_SUCCESS:
+    case API_CONVERSATIONS_LOAD_SUCCESS:
       return {
         ...state,
         loading: false,
         error: false,
-        conversations: [
-          ...state.conversations,
-          {
-            ...action.conversation,
-            loading: false,
-            participants: [
-              ...action.conversation.participants,
-              action.participant
-            ]
-          }
-        ]
+        room: action.room,
+        conversations: action.room.conversations
       };
+    case API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS:
+    case API_CONVERSATIONS_ADD_SUCCESS:
     case API_CONVERSATIONS_PARTICIPANT_SUCCESS:
       return {
         ...state,
         loading: false,
         error: false,
-        conversations: state.conversations.map(convo => {
-          if (convo.roomName === action.conversation.roomName) {
-            const newConvo = {...convo};
-            newConvo.participants.push(action.participant)
-            return newConvo;
-          }
-          return convo;
-        })
-      };
-    case API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        error: false,
-        conversations: state.conversations.map(convo => {
-          if (convo.roomName === action.conversation.roomName) {
-            const newConvo = {...convo};
-            newConvo.participants = newConvo.participants.map(p => p !== action.participant ? p : null)
-            return newConvo;
-          }
-          return convo;
-        })
+        conversations: action.conversations
       };
     default:
       return state;
