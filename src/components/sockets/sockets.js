@@ -24,7 +24,7 @@ const Sockets = () => {
   }
 
   return (
-    <div style={{ fontSize: '12px', marginTop: '50px', color: '#ddd' }}>
+    <div style={{ fontSize: '12px', marginTop: '50px' }}>
       {roomName} Room Details<br />
       Created {moment(createdDate).fromNow()}
       <div>Convos underway:<br />

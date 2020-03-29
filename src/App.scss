@@ -1,0 +1,17 @@
+@import "~bootstrap/scss/bootstrap";
+
+.myHero {
+  background: linear-gradient(90deg, rgba(50, 50, 50, 0.3), rgba(0, 0, 0, 0.3)), url(/static/media/hero.0925318b.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  h1 {
+    color: white;
+    text-shadow: 2px 2px 4px #000;
+
+    .badge {
+      text-shadow: none;
+    }
+  }
+}

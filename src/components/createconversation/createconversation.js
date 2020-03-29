@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { name as ConvoName, actions as ConvoActions } from 'redux/api/conversations/conversations';
+import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
+import InputGroup from 'components/inputgroup/inputgroup';
+import FormControl from 'components/formcontrol/formcontrol';
 import { name as MeName } from 'redux/api/me/me';
+import Button from 'components/button/button';
 
 import CONFIG from 'config';
 
 export const addConvo = (options, participantEmail, dispatch) => {
-  ConvoActions.add(options, participantEmail)(dispatch);
+  RoomActions.add(options, participantEmail, participantEmail)(dispatch);
 };
 
 const sortByconvoNumber = (a, b) => {
@@ -23,12 +26,12 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
   const myName = useSelector(state => state[MeName].name);
   const myEmail = useSelector(state => state[MeName].email);
   const [createConvo, setCreateConvo] = useState(false);
-  const [newConvoName, setNewConvoName] = useState(`Convo with ${myName}`);
+  const [newRoomName, setNewRoomName] = useState(`Convo with ${myName}`);
 
   useEffect(() => {
   }, [conversations]);
 
-  // const lastconvoNumber = useSelector(state => state[ConvoName].conversations.sort(sortByconvoNumber).slice(-1)[0]).convoNumber;
+  // const lastconvoNumber = useSelector(state => state[RoomName].conversations.sort(sortByconvoNumber).slice(-1)[0]).convoNumber;
 
   const setConvoOptions = () => {
     let lastconvoNumber = 0;
@@ -36,7 +39,7 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
       lastconvoNumber = conversations.sort(sortByconvoNumber).splice(-1)[0].convoNumber + 1;
     }
 
-    return CONFIG.CONVERSATION_DEFAULTS(lastconvoNumber, roomName, newConvoName);
+    return CONFIG.CONVERSATION_DEFAULTS(lastconvoNumber, roomName, newRoomName);
   };
 
   const createNewConversationClick = () => {
@@ -52,7 +55,7 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
   };
 
   const createRoomDone = (convo) => {
-    setNewConvoName('');
+    setNewRoomName('');
     setCreateConvo(false);
     if (onCreate) onCreate(convo);
   };
@@ -62,14 +65,20 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
   return (
     <div>
       {!createConvo &&
-        <button onClick={() => setCreateConvo(true)}>Create New Convo</button>
+        <Button onClick={() => setCreateConvo(true)}>Create New Convo</Button>
       }
       {createConvo &&
-        <>
-          Name of Convo: <input value={newConvoName} onChange={e => setNewConvoName(e.target.value)} style={{fontSize: '12px', marginRight: '10px', width: '200px' }}/>
-          <br/>
-          <button onClick={createNewConversationClick}>Create new Conversation</button>
-        </>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Conversation Name"
+            aria-label="Conversation Name"
+            value={newRoomName}
+            onChange={e => setNewRoomName(e.target.value)}
+          />
+          <InputGroup.Append>
+            <Button variant="outline-secondary" onClick={createNewConversationClick}>Create</Button>
+          </InputGroup.Append>
+        </InputGroup>
       }
     </div>
   )
