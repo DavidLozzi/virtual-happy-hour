@@ -39,12 +39,12 @@ const Conversation = ({ convo, isEnlarged, setEnlargeConvo, options }) => {
       {isEnlarged && <><button onClick={() => setEnlargeConvo(null)}>close</button><br /></>}
       <h4>{convo.roomTitle}</h4>
       {canEnlarge && <><button onClick={() => setEnlargeConvo(convo)}>enlarge</button><br /></>}
-      {imInThisConvo && <Jitsi
+      {/* {imInThisConvo && <Jitsi
         options={{ ...convo }}
         commands={defaultJitsiCommands}
         className={`${isEnlarged ? 'enlarged' : ''}`}
         mute={true}
-      />}
+      />} */}
       {!imInThisConvo && <button onClick={() => joinConvo(convo)}>join the conversation</button>}
       <Participants convo={convo} options={options} />
     </div>

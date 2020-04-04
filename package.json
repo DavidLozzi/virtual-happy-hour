@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/preset-env": "^7.9.0",
     "bootstrap": "^4.4.1",
     "connected-react-router": "^6.8.0",
+    "env-cmd": "^10.1.0",
     "history": "^4.10.1",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
@@ -24,8 +26,8 @@
   },
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd react-scripts start",
+    "build": "env-cmd -f deploy.env react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

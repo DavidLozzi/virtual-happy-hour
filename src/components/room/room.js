@@ -22,12 +22,13 @@ import './room.scss';
 const Room = ({ match }) => {
   const dispatch = useDispatch();
   const roomName = match.params.roomName;
-  const conversations = useSelector(state => state[RoomName].conversations);
+  const conversations = useSelector(state => state[RoomName].room.conversations);
   const myEmail = useSelector(state => state[MeName].email);
   const lastRefreshed = useSelector(state => state[RoomName].lastRefreshed);
   const [convoApis, setConvoApis] = useState([]);
   const [enlargeConvo, setEnlargeConvo] = useState(null);
   const [loadRoom, setLoadRoom] = useState(false);
+  const [convos, setConvos] = useState([]);
 
   const openRoom = () => {
     setLoadRoom(true);
@@ -61,23 +62,30 @@ const Room = ({ match }) => {
   //   api.addEventListener('audioMuteStatusChanged', ({ muted }) => muteStatusChanged(convo, muted));
   // };
 
-  const addConvoApi = (options, api) => {
-    // console.log('checking on api', options.roomName);
-    const apis = convoApis;
-    if (apis && !apis.find(o => o.roomName === options.roomName)) {
-      // setApiEvents(api, options);
-      apis.push({ roomName: options.roomName, api });
-      console.log('added api', options.roomName);
-      setConvoApis(apis);
-    }
-  };
+  // const addConvoApi = (options, api) => {
+  //   // console.log('checking on api', options.roomName);
+  //   const apis = convoApis;
+  //   if (apis && !apis.find(o => o.roomName === options.roomName)) {
+  //     // setApiEvents(api, options);
+  //     apis.push({ roomName: options.roomName, api });
+  //     console.log('added api', options.roomName);
+  //     setConvoApis(apis);
+  //   }
+  // };
 
   // JitsiSubject.subscribe({
   //   next: ({ options, api }) => addConvoApi(options, api)
   // });
 
   useEffect(() => {
-    RoomActions.getFromApi(roomName)(dispatch);
+    RoomActions.setRoom(roomName)(dispatch);
+    RoomActions.listen()(dispatch);
+    // mySocket.on('RoomDetails', function(room) {
+    //   setConvos(room.conversations)
+    //   // RoomActions.saveRoom(room);
+    //   console.log('RoomDetails received', room);
+    // });
+    mySocket.emit('SetRoom', roomName);
   }, [])
 
   useEffect(() => {
@@ -93,21 +101,7 @@ const Room = ({ match }) => {
       addConvo(options, myEmail, dispatch);
     };
 
-    // const refreshConnection = () => {
-    //   console.log('refreshing');
-    //   mySocket.on('RoomDetails', room => {
-    //     console.log('RoomDetails', room);
-    //     RoomActions.saveRoom(room)(dispatch);
-    //   });
-    //   setTimeout(refreshConnection, 2000);  
-    // };
-
-    // refreshConnection();
-
     if (loadRoom) {
-      mySocket.on('RoomDetails', room => {
-        RoomActions.saveRoom(room);
-      });
       const lobby = conversations.find(c => c.convoNumber === 0);
       if (!lobby) {
         createLobby();
@@ -128,30 +122,35 @@ const Room = ({ match }) => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      {!roomName &&
+      {!roomName && // move this to a new page/container and update app.s for root path /
         <RoomForm />
       }
       {roomName &&
         <>
+          <div style={{ background: 'white' }}><Sockets /></div>
           {!loadRoom &&
-            <LoginForm roomName={roomName} onOpen={openRoom} />
+            <>
+              <LoginForm roomName={roomName} onOpen={openRoom} />
+              <div style={{background: 'white'}}>
+                {conversations.map(convo => <div key={convo.convoNumber}>{convo.convoNumber}</div>)}
+              </div>
+            </>
           }
-          {loadRoom && conversations[0] && 
+          {loadRoom && conversations[0] &&
             <div className="fullScreen">
               {conversations[0].hosts.find(h => h === myEmail) && <HostControls />}
               {conversations[0] && <CreateConversation conversations={conversations} roomName={roomName} />}
               <div id="conversations">
                 {conversations.map(convo => {
                   const isEnlarged = enlargeConvo && enlargeConvo.roomName === convo.roomName;
-                  if(convo.convoNumber === 0)
-                    return <LobbyConvo convo={convo} />
+                  if (convo.convoNumber === 0)
+                    return <LobbyConvo convo={convo} key={convo.convoNumber} />
                   else {
-                    return <Conversation convo={convo} isEnlarged={isEnlarged} setEnlargeConvo={setEnlargeConvo} />
+                    return <Conversation convo={convo} isEnlarged={isEnlarged} setEnlargeConvo={setEnlargeConvo} key={convo.convoNumber} />
                   }
                 })
                 }
               </div>
-              <Sockets />
             </div>
           }
         </>
