@@ -13,48 +13,56 @@ export const API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING = 'API_CONVERSATIONS_P
 export const API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS';
 export const API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED';
 
-export const name = 'conversations';
+export const name = 'room';
 
 const initialState = {
-  room: {},
-  conversations: [],
+  room: {
+    conversations: []
+  },
   loading: true,
   error: false,
-  errorMessage: ''
+  errorMessage: '',
+  lastRefreshed: Date.now()
 };
 
 // TODO Need some level of error handling here
 
 export const actions = {
-  getFromApi: (roomName) => async (dispatch) => {
+  setRoom: (roomName) => async (dispatch) => {
     dispatch({ type: API_CONVERSATIONS_LOAD_PENDING });
-    mySocket.emit('SetRoom', roomName);
-    mySocket.on('RoomDetails', room => {
-      // mySocket.off('RoomDetails'); // TODO not sure i like this, but didn't want to bog down the reducer ever 500ms
+    mySocket.emit('SetRoom', roomName, (room) => {
       dispatch({ type: API_CONVERSATIONS_LOAD_SUCCESS, room })
     });
   },
-  add: (conversation, participant) => async (dispatch, getState) => {
+  listen: () => async (dispatch) => {
+    console.log('socket listening on RoomDetails');
+    mySocket.on('RoomDetails', room => {
+      dispatch({ type: API_CONVERSATIONS_LOAD_SUCCESS, room })
+    });
+  },
+  saveRoom: (room) => async (dispatch) => {
+    dispatch({ type: API_CONVERSATIONS_LOAD_SUCCESS, room});
+  },
+  add: (conversation, participant, host) => async (dispatch) => {
     dispatch({ type: API_CONVERSATIONS_ADD_PENDING });
 
-    // const room = getState().state.room;
-    const newConvo = Object.assign(conversation, { participants: [participant], hosts: [participant] });
-    mySocket.emit('NewConvo', newConvo, (conversations) => {
-      dispatch({ type: API_CONVERSATIONS_ADD_SUCCESS, conversations });
+    const newConvo = Object.assign(conversation, { participants: [participant], hosts: [host] });
+    mySocket.emit('NewConvo', newConvo, (room) => {
+      dispatch({ type: API_CONVERSATIONS_ADD_SUCCESS, room });
     });
   },
   addParticipant: (conversation, participant) => async (dispatch) => {
     dispatch({ type: API_CONVERSATIONS_PARTICIPANT_PENDING });
 
-    mySocket.emit('AddParticipant', { roomName: conversation.roomName, participant }, (conversations) => {
-      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_SUCCESS, conversations });
+    mySocket.emit('AddParticipant', { roomName: conversation.lobbyName, convoNumber: conversation.convoNumber, participant }, (room) => {
+      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_SUCCESS, room });
     });
   },
   removeMeFromOtherConvos: (conversation, participant) => async (dispatch) => {
     dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING });
 
-    mySocket.emit('RemoveFromOtherConvos', { roomName: conversation.roomName, participant }, (conversations) => {
-      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS, conversations });
+    mySocket.emit('RemoveFromOtherConvos', { roomName: conversation.roomName, participant }, (room) => {
+      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS, room });
     })
   }
 };
@@ -82,13 +90,6 @@ export function reducer(state = initialState, action) {
         errorMessage: action.payload
       };
     case API_CONVERSATIONS_LOAD_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        error: false,
-        room: action.room,
-        conversations: action.room.conversations
-      };
     case API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS:
     case API_CONVERSATIONS_ADD_SUCCESS:
     case API_CONVERSATIONS_PARTICIPANT_SUCCESS:
@@ -96,7 +97,8 @@ export function reducer(state = initialState, action) {
         ...state,
         loading: false,
         error: false,
-        conversations: action.conversations
+        room: action.room,
+        lastRefreshed: (JSON.stringify(action.room) === JSON.stringify(state.room) ? Date.now() : state.lastRefreshed)
       };
     default:
       return state;

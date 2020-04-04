@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
+    "@babel/preset-env": "^7.9.0",
+    "bootstrap": "^4.4.1",
     "connected-react-router": "^6.8.0",
+    "env-cmd": "^10.1.0",
     "history": "^4.10.1",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
+    "npm-force-resolutions": "0.0.3",
     "react": "^16.13.1",
+    "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
@@ -23,8 +25,9 @@
     "socket.io-client": "^2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "preinstall": "npx npm-force-resolutions",
+    "start": "env-cmd react-scripts start",
+    "build": "env-cmd -f deploy.env react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -44,6 +47,13 @@
     ]
   },
   "devDependencies": {
+    "@babel/compat-data": "^7.9.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
     "redux-devtools": "^3.5.0"
+  },
+  "resolutions": {
+    "@babel/preset-env": "^7.8.7"
   }
 }

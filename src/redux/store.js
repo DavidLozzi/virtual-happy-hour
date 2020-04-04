@@ -6,7 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import history from 'redux/history';
 
-import { name as conversationsName, reducer as conversationsReducer } from 'redux/api/conversations/conversations';
+import { name as conversationsName, reducer as conversationsReducer } from 'redux/api/room/room';
 import { name as meName, reducer as meReducer } from 'redux/api/me/me';
 
 const middleware = [ // Order dependent
