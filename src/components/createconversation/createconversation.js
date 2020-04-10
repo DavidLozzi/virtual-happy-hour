@@ -23,9 +23,15 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
   const me = useSelector(state => state[MeName].participant);
   const [createConvo, setCreateConvo] = useState(false);
   const [newConvoName, setNewConvoName] = useState(`Convo with ${me.name}`);
+  const canCreateConvos = useSelector(state => state[RoomName].room.enableConvo);
+  const [iAmHost, setIAmHost] = useState(false);
 
   useEffect(() => {
-  }, [conversations]);
+    setIAmHost(conversations
+      .find(c => c.convoNumber === 0)
+      .hosts
+      .some(h => h.email === me.email));
+  }, [conversations, me]);
 
   const setConvoOptions = () => {
     let lastconvoNumber = 0;
@@ -50,24 +56,28 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
 
   // TODO field should be required, validate the convo name doens't already exist
   return (
-    <div className="col-md-12">
-      {!createConvo &&
-        <Button onClick={() => setCreateConvo(true)}>Create New Convo</Button>
+    <>
+      {(canCreateConvos || iAmHost) &&
+        <div className="col-md-12">
+          {!createConvo &&
+            <Button onClick={() => setCreateConvo(true)}>Create New Convo</Button>
+          }
+          {createConvo &&
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Conversation Name"
+                aria-label="Conversation Name"
+                value={newConvoName}
+                onChange={e => setNewConvoName(e.target.value)}
+              />
+              <InputGroup.Append>
+                <Button variant="outline-secondary" onClick={createNewConversationClick}>Create</Button>
+              </InputGroup.Append>
+            </InputGroup>
+          }
+        </div>
       }
-      {createConvo &&
-        <InputGroup className="mb-3">
-          <FormControl
-            placeholder="Conversation Name"
-            aria-label="Conversation Name"
-            value={newConvoName}
-            onChange={e => setNewConvoName(e.target.value)}
-          />
-          <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={createNewConversationClick}>Create</Button>
-          </InputGroup.Append>
-        </InputGroup>
-      }
-    </div>
+    </>
   )
 }
 

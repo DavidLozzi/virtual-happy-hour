@@ -1,10 +1,4 @@
-.convoWrapper {
-  // display: inline-table;
-  // margin: 10px;
-  // min-width: 350px;
-  // min-height: 500px;
-  // padding: 8px;
-}
+@import "node_modules/bootstrap/scss/bootstrap";
 
 .enlargedWrapper {
   position: absolute;
@@ -14,4 +8,12 @@
   height: 100vh;
   margin: 0;
   background-color: white;
+}
+
+.topRight {
+  margin-bottom: ($spacer * 2);
+}
+
+.bottomRight {
+  margin-top: ($spacer * 2);
 }

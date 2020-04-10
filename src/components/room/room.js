@@ -5,13 +5,13 @@ import CONFIG from 'config';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { name as MeName } from 'redux/api/me/me';
 
-import mySocket from 'components/sockets/mySocket';
 import RoomForm from 'components/roomform/roomform';
 import LoginForm from 'components/loginform/loginform';
-import CreateConversation, { addConvo } from 'components/createconversation/createconversation';
+import CreateConversation from 'components/createconversation/createconversation';
 import Conversation from 'components/conversation/conversation';
 import LobbyConvo from 'components/lobbyconvo/lobbyconvo';
 import HostControls from 'components/hostcontrols/hostcontrols';
+import Header from 'components/header/header';
 
 import './room.scss';
 import { Container, Row } from 'react-bootstrap';
@@ -86,22 +86,28 @@ const Room = ({ match }) => {
           {
             loadRoom && conversations[0] &&
             <>
+              <Header fluid />
               <Container fluid>
                 <Row>
-                  <HostControls conversations={conversations} />
-                  {conversations[0] && <CreateConversation conversations={conversations} roomName={roomName} />}
                   <LobbyConvo convo={conversations[0]} />
                 </Row>
               </Container>
               <Container>
                 <Row id="conversations">
+                {conversations[0] && <CreateConversation conversations={conversations} roomName={roomName} />}
+                  
                   {conversations
                     .filter(c => c.convoNumber !== lobbyNumber)
                     .map(convo => {
                       const isEnlarged = enlargeConvo && enlargeConvo.convoName === convo.convoName;
                       return (
                         <div className="col-md-4">
-                          <Conversation convo={convo} isEnlarged={isEnlarged} setEnlargeConvo={setEnlargeConvo} key={convo.convoNumber} />
+                          <Conversation
+                            convo={convo}
+                            isEnlarged={isEnlarged}
+                            setEnlargeConvo={setEnlargeConvo}
+                            key={convo.convoNumber}
+                          />
                         </div>
                       );
                     })

@@ -1,6 +1,9 @@
 import React from 'react';
 import Conversation, { LAYOUTS } from 'components/conversation/conversation';
 import './lobbyconvo.scss';
+import HostControls from '../hostcontrols/hostcontrols';
+import Counts from '../counts/counts';
+import { Row } from 'react-bootstrap';
 
 const LobbyConvo = ({ convo }) => {
   const options = {
@@ -13,6 +16,13 @@ const LobbyConvo = ({ convo }) => {
         convo={convo}
         options={options}
         layout={LAYOUTS.WIDE}
+        viewOptions={{ showTitle: false }}
+        topRight={
+          <Row noGutters><HostControls /></Row>
+        }
+        bottomRight={
+          <Row noGutters><Counts /></Row>
+        }
       />
     </div>
   )

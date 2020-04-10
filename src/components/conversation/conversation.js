@@ -6,27 +6,33 @@ import Jitsi, { JitsiSubject } from 'components/jitsi/jitsi';
 import Participants from '../participants/participants';
 
 import './conversation.scss';
+import { Row, Col, Container } from 'react-bootstrap';
 
 export const LAYOUTS = {
   WIDE: {
-    video: 'col-lg-9',
-    participants: 'col-lg-3'
+    video: 9,
+    participants: 3
   },
   NARROW: {
-    video: 'col-lg-12',
-    participants: 'col-lg-12'
-  },
-}
+    video: 12,
+    participants: 12
+  }
+};
 
 // TODO enable jitsi on mobile https://community.jitsi.org/t/enable-mobile-browser-in-jitsi-meet/29076/11?u=davidlozzi
 
-const Conversation = ({ convo, isEnlarged, setEnlargeConvo, options, layout }) => {
+const Conversation = ({ convo, isEnlarged, setEnlargeConvo, options, layout, viewOptions, topRight, bottomRight }) => {
   const dispatch = useDispatch();
   const me = useSelector(state => state[MeName].participant);
   const [imInThisConvo, setImInThisConvo] = useState(false);
   const [myName, setMyName] = useState(me.name);
   const [myEmail, setMyEmail] = useState(me.email);
-  
+
+  const defaultViewOptions = {
+    showTitle: true
+  };
+  const view = viewOptions ? Object.assign(defaultViewOptions, viewOptions) : defaultViewOptions;
+
   const canEnlarge = !isEnlarged && convo.canResize;
   const isLobby = convo.convoNumber === 0;
   const defaultJitsiCommands = {
@@ -61,9 +67,9 @@ const Conversation = ({ convo, isEnlarged, setEnlargeConvo, options, layout }) =
   }, [convo]);
 
   return (
-    <div key={convo.convoName} className={`row convoWrapper ${isEnlarged ? 'enlargedWrapper' : ''}`}>
-      <div className={layout.video}>
-        <h4>{convo.roomTitle}</h4>
+    <Row className={`${isEnlarged ? 'enlargedWrapper' : ''}`}>
+      <Col md={layout.video}>
+        {view.showTitle && <h4>{convo.roomTitle}</h4>}
         <div className="convo-buttons">
           {imInThisConvo &&
             <>
@@ -72,6 +78,9 @@ const Conversation = ({ convo, isEnlarged, setEnlargeConvo, options, layout }) =
               {!isLobby && <button onClick={() => leaveConvo(convo)}>leave</button>}
             </>
           }
+          {!imInThisConvo &&
+            <button onClick={() => joinConvo(convo)}>join the conversation</button>
+          }
         </div>
         {imInThisConvo && <Jitsi
           options={{ ...convo }}
@@ -79,17 +88,20 @@ const Conversation = ({ convo, isEnlarged, setEnlargeConvo, options, layout }) =
           className={`${isEnlarged ? 'enlarged' : ''}`}
           mute={true}
         />}
-      </div>
-      <div className={layout.participants}>
-        {!imInThisConvo && <button onClick={() => joinConvo(convo)}>join the conversation</button>}
+      </Col>
+      <Col md={layout.participants}>
+        {topRight && <Container fluid className="topRight">{topRight}</Container>}
         <Participants convo={convo} options={options} />
-      </div>
-    </div>
+        {bottomRight && <Container fluid className="bottomRight">{bottomRight}</Container>}
+      </Col>
+    </Row>
   )
 };
 
 Conversation.defaultProps = {
-  layout: LAYOUTS.NARROW
+  layout: LAYOUTS.NARROW,
+  topRight: null,
+  bottomRight: null
 }
 
 export default Conversation;
