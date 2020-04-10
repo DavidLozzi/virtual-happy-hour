@@ -13,11 +13,13 @@ import { actions as MeActions } from 'redux/api/me/me';
 
 const LoginForm = ({ roomName, onOpen }) => {
   const dispatch = useDispatch();
-  const [myName, setMyName] = useState('David Lozzi'); // TODO get/set local storage
-  const [myEmail, setMyEmail] = useState('david@lozzi.net');
+  const [myName, setMyName] = useState(''); // TODO get/set local storage
+  const [myEmail, setMyEmail] = useState('');
 
   const openRoom = () => {
+    // #public is in index.html, very hacky approach but it works
     document.getElementById('public').after(document.getElementById('root'));
+    document.getElementById('public').style.display = 'none';
     MeActions.set(myName, myEmail)(dispatch);
     if (onOpen) onOpen();
   };

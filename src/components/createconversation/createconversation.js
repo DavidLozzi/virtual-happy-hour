@@ -9,9 +9,6 @@ import Button from 'components/button/button';
 
 import CONFIG from 'config';
 
-export const addConvo = (options, participantEmail, dispatch) => {
-  RoomActions.add(options, participantEmail, participantEmail)(dispatch);
-};
 
 const sortByconvoNumber = (a, b) => {
   if (a.convoNumber > b.convoNumber) {
@@ -23,15 +20,12 @@ const sortByconvoNumber = (a, b) => {
 
 const CreateConversation = ({ roomName, onCreate, conversations }) => {
   const dispatch = useDispatch();
-  const myName = useSelector(state => state[MeName].name);
-  const myEmail = useSelector(state => state[MeName].email);
+  const me = useSelector(state => state[MeName].participant);
   const [createConvo, setCreateConvo] = useState(false);
-  const [newRoomName, setNewRoomName] = useState(`Convo with ${myName}`);
+  const [newConvoName, setNewConvoName] = useState(`Convo with ${me.name}`);
 
   useEffect(() => {
   }, [conversations]);
-
-  // const lastconvoNumber = useSelector(state => state[RoomName].conversations.sort(sortByconvoNumber).slice(-1)[0]).convoNumber;
 
   const setConvoOptions = () => {
     let lastconvoNumber = 0;
@@ -39,31 +33,24 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
       lastconvoNumber = conversations.sort(sortByconvoNumber).splice(-1)[0].convoNumber + 1;
     }
 
-    return CONFIG.CONVERSATION_DEFAULTS(lastconvoNumber, roomName, newRoomName);
+    return CONFIG.CONVERSATION_DEFAULTS(lastconvoNumber, roomName, newConvoName);
   };
 
   const createNewConversationClick = () => {
     const convo = setConvoOptions();
-    addConvo(convo, myEmail, dispatch);
-    createRoomDone(convo);
-  };
-
-  const createNewConversationOtherClick = () => {
-    const convo = setConvoOptions();
-    addConvo(convo, 'luke@skywalker.com', dispatch);
+    RoomActions.add(convo, me, me)(dispatch);
     createRoomDone(convo);
   };
 
   const createRoomDone = (convo) => {
-    setNewRoomName('');
+    setNewConvoName('');
     setCreateConvo(false);
     if (onCreate) onCreate(convo);
   };
 
-  // TODO add validation of input, and if name already exists
-
+  // TODO field should be required, validate the convo name doens't already exist
   return (
-    <div>
+    <div className="col-md-12">
       {!createConvo &&
         <Button onClick={() => setCreateConvo(true)}>Create New Convo</Button>
       }
@@ -72,8 +59,8 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
           <FormControl
             placeholder="Conversation Name"
             aria-label="Conversation Name"
-            value={newRoomName}
-            onChange={e => setNewRoomName(e.target.value)}
+            value={newConvoName}
+            onChange={e => setNewConvoName(e.target.value)}
           />
           <InputGroup.Append>
             <Button variant="outline-secondary" onClick={createNewConversationClick}>Create</Button>

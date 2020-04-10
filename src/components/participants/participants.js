@@ -4,7 +4,7 @@ import { name as MeName } from 'redux/api/me/me';
 import './participants.scss';
 
 const Participants = ({ convo, options }) => {
-  const myEmail = useSelector(state => state[MeName].email);
+  const myEmail = useSelector(state => state[MeName].participant.email);
 
   return (
     <div id="participants">
@@ -12,13 +12,13 @@ const Participants = ({ convo, options }) => {
       {
         convo.participants
           .map((parti) => {
-            const isHost = (options && options.showHost && convo.hosts.find(h => h === parti));
-            const isMe = parti === myEmail;
+            const isHost = (options && options.showHost && convo.hosts.find(h => h.email === parti.email));
+            const isMe = parti.email === myEmail;
             return (
-              <div key={parti} className={`participant ${isHost ? 'host' : ''}`}>
+              <div key={parti.email} className={`participant ${isHost ? 'host' : ''}`}>
                 {isHost ? 'hosted by ' : ''}
                 {isMe ? 'Me (' : ''}
-                {parti}
+                {`${parti.name} ~ ${parti.email}`}
                 {isMe ? ')' : ''}
               </div>
             )

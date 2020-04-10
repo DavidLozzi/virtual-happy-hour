@@ -6,28 +6,29 @@ import './jitsi.scss';
 
 export const JitsiSubject = new Subject();
 
+// TODO gotta support mobile browser
 const Jitsi = ({ options, commands, mute, className }) => {
-  // const [api, setApi] = useState();
 
   useEffect(() => {
     const newOptions = Object.assign(options,
       {
+        roomName: options.convoName,
         generateRoom: false,
-        parentNode: document.getElementById(options.roomName),
+        parentNode: document.getElementById(options.convoName),
         interfaceConfigOverwrite: {
           SHOW_JITSI_WATERMARK: false,
           SHOW_WATERMARK_FOR_GUESTS: false,
           SHOW_POWERED_BY: true,
           APP_NAME: 'Vitual Happy Hour',
           TOOLBAR_BUTTONS: [
-            'microphone', 'camera', 'closedcaptions', '-desktop', 'fullscreen',
+            'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
             'fodeviceselection', '-hangup', '-profile', '-info', 'chat', 'recording',
             '-livestreaming', '-etherpad', 'sharedvideo', 'settings', 'raisehand',
             'videoquality', 'filmstrip', '-invite', '-feedback', 'stats', 'shortcuts',
             'tileview', 'videobackgroundblur', 'download', 'help', '-mute-everyone'
           ],
           SETTINGS_SECTIONS: ['devices', 'language', '-moderator', 'profile', '-calendar'],
-          MOBILE_APP_PROMO: false,
+          // MOBILE_APP_PROMO: false, // if this is enabled then it removes the app download need, but then errors
           SUPPORT_URL: 'http://davidlozzi.com'
         }
       }
@@ -36,33 +37,30 @@ const Jitsi = ({ options, commands, mute, className }) => {
     // eslint-disable-next-line no-undef
     const api = new JitsiMeetExternalAPI('meet.jit.si', newOptions);
 
-    // api.addEventListener('audioMuteStatusChanged', ({ muted }) => muteStatusChanged(convo, muted));
-    api.addEventListener('audioMuteStatusChanged', ({ muted }) => JitsiSubject.next({ type: 'mute', roomName: options.roomName }));
+    api.addEventListener('audioMuteStatusChanged', ({ muted }) => JitsiSubject.next({ type: 'mute', convo: options }));
     api.executeCommands(commands);
 
-    const iframe = window.document.getElementById(options.roomName).getElementsByTagName('iframe')[0];
+    const iframe = window.document.getElementById(options.convoName).getElementsByTagName('iframe')[0];
     iframe.style = 'border: 0';
 
-    JitsiSubject.next({ type: 'new', options: newOptions, api });
+    // JitsiSubject.next({ type: 'new', options: newOptions, api });
 
-    JitsiSubject.subscribe((data) => {
-      if (data.type === 'mute') {
-        api.isAudioMuted().then(muted => {
-          if (!muted) {
-            api.executeCommand('toggleAudio');
-          }
-        });
+    JitsiSubject.subscribe(({type, convo}) => {
+      if (type === 'mute') {
+        if (convo.convoName !== options.roomName) {
+          api.isAudioMuted().then(muted => {
+            if (!muted) {
+              api.executeCommand('toggleAudio');
+            }
+          });
+        }
       }
     });
 
   }, []);
 
-  useEffect(() => {
-    console.log('mute', mute);
-  }, [mute])
-
   return (
-    <div id={options.roomName} className={`convo ${className} ${mute ? 'muted' : ''}`} />
+    <div id={options.convoName} className={`convo ${className} ${mute ? 'muted' : ''}`} />
   )
 };
 

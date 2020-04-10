@@ -5,8 +5,7 @@ export const API_ME_SET_FAILED = 'API_ME_SET_FAILED';
 export const name = 'me';
 
 const initialState = {
-  name: '',
-  email: '',
+  participant: {},
   loading: true,
   error: false,
   errorMessage: ''
@@ -16,7 +15,7 @@ export const actions = {
   set: (myname, email) => async (dispatch) => {
     dispatch({ type: API_ME_SET_PENDING });
 
-    dispatch({ type: API_ME_SET_SUCCESS, name: myname, email });
+    dispatch({ type: API_ME_SET_SUCCESS, participant: { name: myname, email } });
   }
 };
 
@@ -41,8 +40,7 @@ export function reducer(state = initialState, action) {
         ...state,
         loading: false,
         error: false,
-        name: action.name,
-        email: action.email
+        participant: action.participant
       };
     default:
       return state;
