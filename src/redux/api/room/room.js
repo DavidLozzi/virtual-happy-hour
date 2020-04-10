@@ -1,17 +1,7 @@
 import mySocket from 'components/sockets/mySocket';
 
-export const API_CONVERSATIONS_LOAD_PENDING = 'API_CONVERSATIONS_LOAD_PENDING';
-export const API_CONVERSATIONS_LOAD_SUCCESS = 'API_CONVERSATIONS_LOAD_SUCCESS';
-export const API_CONVERSATIONS_LOAD_FAILED = 'API_CONVERSATIONS_LOAD_FAILED';
-export const API_CONVERSATIONS_ADD_PENDING = 'API_CONVERSATIONS_ADD_PENDING';
-export const API_CONVERSATIONS_ADD_SUCCESS = 'API_CONVERSATIONS_ADD_SUCCESS';
-export const API_CONVERSATIONS_ADD_FAILED = 'API_CONVERSATIONS_ADD_FAILED';
-export const API_CONVERSATIONS_PARTICIPANT_PENDING = 'API_CONVERSATIONS_PARTICIPANT_PENDING';
-export const API_CONVERSATIONS_PARTICIPANT_SUCCESS = 'API_CONVERSATIONS_PARTICIPANT_SUCCESS';
-export const API_CONVERSATIONS_PARTICIPANT_FAILED = 'API_CONVERSATIONS_PARTICIPANT_FAILED';
-export const API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING';
-export const API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS';
-export const API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED = 'API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED';
+export const API_CONVOS_LOAD_ROOM_SUCCESS = 'API_CONVOS_LOAD_ROOM_SUCCESS';
+export const API_CONVOS_ERROR = 'API_CONVOS_ERROR';
 
 export const name = 'room';
 
@@ -28,71 +18,57 @@ const initialState = {
 // TODO Need some level of error handling here
 
 export const actions = {
-  setRoom: (roomName) => async (dispatch) => {
-    dispatch({ type: API_CONVERSATIONS_LOAD_PENDING });
-    mySocket.emit('SetRoom', roomName, (room) => {
-      dispatch({ type: API_CONVERSATIONS_LOAD_SUCCESS, room })
-    });
-  },
   listen: () => async (dispatch) => {
-    console.log('socket listening on RoomDetails');
-    mySocket.on('RoomDetails', room => {
-      dispatch({ type: API_CONVERSATIONS_LOAD_SUCCESS, room })
+    mySocket.on('RoomDetails', room => { // room is an object with convos
+      dispatch({ type: API_CONVOS_LOAD_ROOM_SUCCESS, room })
+    });
+    mySocket.on('error', (error) => { // TODO alert users
+      console.log('socket error', error);
+      dispatch({ type: API_CONVOS_ERROR, error })
     });
   },
-  saveRoom: (room) => async (dispatch) => {
-    dispatch({ type: API_CONVERSATIONS_LOAD_SUCCESS, room});
+  setRoom: (roomName) => async (dispatch) => {
+    dispatch({ type: 'API_CONVOS_SET_ROOM' });
+    mySocket.emit('SetRoom', roomName);
   },
   add: (conversation, participant, host) => async (dispatch) => {
-    dispatch({ type: API_CONVERSATIONS_ADD_PENDING });
+    dispatch({ type: 'API_CONVOS_ADD_CONVO' });
 
     const newConvo = Object.assign(conversation, { participants: [participant], hosts: [host] });
-    mySocket.emit('NewConvo', newConvo, (room) => {
-      dispatch({ type: API_CONVERSATIONS_ADD_SUCCESS, room });
-    });
+    mySocket.emit('NewConvo', newConvo);
   },
   addParticipant: (conversation, participant) => async (dispatch) => {
-    dispatch({ type: API_CONVERSATIONS_PARTICIPANT_PENDING });
+    dispatch({ type: 'API_CONVOS_ADD_PARTICIPANT' });
 
-    mySocket.emit('AddParticipant', { roomName: conversation.lobbyName, convoNumber: conversation.convoNumber, participant }, (room) => {
-      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_SUCCESS, room });
-    });
+    mySocket.emit('AddParticipant', { roomName: conversation.roomName, convoNumber: conversation.convoNumber, participant });
   },
   removeMeFromOtherConvos: (conversation, participant) => async (dispatch) => {
-    dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING });
+    dispatch({ type: 'API_CONVOS_REMOVE_FROM_OTHER' });
 
-    mySocket.emit('RemoveFromOtherConvos', { roomName: conversation.roomName, participant }, (room) => {
-      dispatch({ type: API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS, room });
-    })
+    mySocket.emit('RemoveFromOtherConvos', { roomName: conversation.roomName, convoNumber: conversation.convoNumber, participant })
+  },
+  removeMeFromThisConvo: (conversation, participant) => async (dispatch) => {
+    dispatch({ type: 'API_CONVOS_REMOVE_FROM_CONVO' });
+
+    mySocket.emit('RemoveMeFromThisConvo', { roomName: conversation.roomName, convoNumber: conversation.convoNumber, participant });
+  },
+  updateProperty: (roomName, property, value) => async (dispatch) => {
+    dispatch({ type: 'API_CONVOS_UPDATE_PROPERTY' });
+
+    mySocket.emit('UpdateRoomProperty', { roomName, property, value });
   }
 };
 
 export function reducer(state = initialState, action) {
   switch (action.type) {
-    case API_CONVERSATIONS_LOAD_PENDING:
-    case API_CONVERSATIONS_PARTICIPANT_REMOVE_PENDING:
-    case API_CONVERSATIONS_PARTICIPANT_PENDING:
-    case API_CONVERSATIONS_ADD_PENDING:
-      return {
-        ...state,
-        loading: true,
-        error: false,
-        errorMessage: ''
-      };
-    case API_CONVERSATIONS_LOAD_FAILED:
-    case API_CONVERSATIONS_PARTICIPANT_REMOVE_FAILED:
-    case API_CONVERSATIONS_PARTICIPANT_FAILED:
-    case API_CONVERSATIONS_ADD_FAILED:
+    case API_CONVOS_ERROR:
       return {
         ...state,
         loading: false,
         error: true,
         errorMessage: action.payload
       };
-    case API_CONVERSATIONS_LOAD_SUCCESS:
-    case API_CONVERSATIONS_PARTICIPANT_REMOVE_SUCCESS:
-    case API_CONVERSATIONS_ADD_SUCCESS:
-    case API_CONVERSATIONS_PARTICIPANT_SUCCESS:
+    case API_CONVOS_LOAD_ROOM_SUCCESS:
       return {
         ...state,
         loading: false,

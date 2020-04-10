@@ -8,20 +8,20 @@ const Sockets = () => {
   const [createdDate, setCreatedDate] = useState();
 
   useEffect(() => {
-    mySocket.on("RoomDetails", data => {
-      setConvos(data.conversations);
-      setRoomName(data.roomName);
-      setCreatedDate(data.created);
-    });
+    // mySocket.on("RoomDetails", data => {
+    //   setConvos(data.conversations);
+    //   setRoomName(data.roomName);
+    //   setCreatedDate(data.created);
+    // });
   }, [])
 
-  const clear = () => {
-    mySocket.emit('ClearConvos');
-  }
+  // const clear = () => {
+  //   mySocket.emit('ClearConvos');
+  // }
 
-  const clearRoom = () => {
-    mySocket.emit('ClearRoom');
-  }
+  // const clearRoom = () => {
+  //   mySocket.emit('ClearRoom');
+  // }
 
   return (
     <div style={{ fontSize: '12px', marginTop: '50px' }}>
@@ -29,7 +29,7 @@ const Sockets = () => {
       Created {moment(createdDate).fromNow()}
       <div>Convos underway:<br />
         {convos && convos.map(c => (
-          <div key={c.convoNumber}>#{c.convoNumber}. {c.roomTitle} ({c.participants.length} peeps)</div>
+          <div key={c.convoNumber}>#{c.convoNumber}. {c.convoName} ({c.participants.length} peeps)</div>
         ))}
       </div>
       <div>

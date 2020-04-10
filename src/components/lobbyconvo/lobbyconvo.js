@@ -1,5 +1,5 @@
 import React from 'react';
-import Conversation from 'components/conversation/conversation';
+import Conversation, { LAYOUTS } from 'components/conversation/conversation';
 import './lobbyconvo.scss';
 
 const LobbyConvo = ({ convo }) => {
@@ -8,10 +8,11 @@ const LobbyConvo = ({ convo }) => {
   };
 
   return (
-    <div id="lobby">
+    <div id="lobby" className="col-md-12">
       <Conversation
         convo={convo}
         options={options}
+        layout={LAYOUTS.WIDE}
       />
     </div>
   )
