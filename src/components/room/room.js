@@ -5,26 +5,25 @@ import CONFIG from 'config';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { name as MeName } from 'redux/api/me/me';
 
-import RoomForm from 'components/roomform/roomform';
 import LoginForm from 'components/loginform/loginform';
 import CreateConversation from 'components/createconversation/createconversation';
 import Conversation from 'components/conversation/conversation';
 import LobbyConvo from 'components/lobbyconvo/lobbyconvo';
-import HostControls from 'components/hostcontrols/hostcontrols';
 import Header from 'components/header/header';
 
 import './room.scss';
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Col, Jumbotron } from 'react-bootstrap';
+import analytics, { CATEGORIES } from 'analytics/analytics';
 
 // Backlog
 // TODO add invite option to allow me to invite someone into my convo
 
 const Room = ({ match }) => {
   const dispatch = useDispatch();
-  const conversations = useSelector(state => state[RoomName].room.conversations);
+  const room = useSelector(state => state[RoomName].room);
   const me = useSelector(state => state[MeName].participant);
   const lastRefreshed = useSelector(state => state[RoomName].lastRefreshed);
-  const [enlargeConvo, setEnlargeConvo] = useState(null);
+  const [maximizedConvo, setMaximizedConvo] = useState(null);
   const [loadRoom, setLoadRoom] = useState(false);
 
   const roomName = match.params.roomName;
@@ -32,14 +31,23 @@ const Room = ({ match }) => {
 
   const openRoom = () => {
     setLoadRoom(true);
+
   };
 
   const amIInThisConvo = (convo) => convo && convo.participants.find(p => p.email === me.email);
 
+  const leaveConvo = () => {
+    setMaximizedConvo(null);
+  };
+
   useEffect(() => {
-    RoomActions.setRoom(roomName)(dispatch);
-    RoomActions.listen()(dispatch);
-    debugger;
+    if (roomName) {
+      analytics.pageView(`room-${roomName}`, `room ${roomName}`);
+      RoomActions.setRoom(roomName)(dispatch);
+      RoomActions.listen()(dispatch);
+    } else {
+      analytics.pageView('room-none', 'no room');
+    }
   }, [roomName, dispatch])
 
   useEffect(() => {
@@ -53,11 +61,11 @@ const Room = ({ match }) => {
         }
       );
       RoomActions.add(lobbyConvo, me, me)(dispatch);
+      analytics.nonInteractionEvent('lobby_created', CATEGORIES.ROOM, roomName);
     };
 
-    debugger;
     if (loadRoom) {
-      const lobby = conversations.find(c => c.convoNumber === 0);
+      const lobby = room.conversations.find(c => c.convoNumber === 0);
       if (!lobby) {
         createLobby();
       } else {
@@ -69,16 +77,16 @@ const Room = ({ match }) => {
   }, [loadRoom, lastRefreshed, me]);
 
   useEffect(() => {
-    if (enlargeConvo) {
+    if (maximizedConvo) {
       window.scrollTo(0, 0);
     }
-  }, [enlargeConvo]);
+  }, [maximizedConvo]);
 
 
   return (
     <div style={{ textAlign: 'center' }}>
-      {!roomName && // move this to a new page/container and update app.s for root path /
-        <RoomForm />
+      {!roomName &&
+        <Jumbotron>Looks like you landed here by accident, <a href="/">click here to try again</a>.</Jumbotron>
       }
       {roomName &&
         <>
@@ -86,32 +94,40 @@ const Room = ({ match }) => {
             <LoginForm roomName={roomName} onOpen={openRoom} />
           }
           {
-            loadRoom && conversations[0] &&
+            loadRoom && room.conversations[0] &&
             <>
               <Header fluid />
-              <Container fluid>
-                <Row>
-                  <LobbyConvo convo={conversations[0]} />
-                </Row>
-              </Container>
+              {!maximizedConvo &&
+                <Container fluid>
+                  <Row>
+                    <LobbyConvo convo={room.conversations[0]} />
+                  </Row>
+                </Container>
+              }
               <Container>
                 <Row id="conversations">
-                {conversations[0] && <CreateConversation conversations={conversations} roomName={roomName} />}
-                  
-                  {conversations
+                  {!maximizedConvo && room.conversations[0] && room.enableConvo && <CreateConversation conversations={room.conversations} roomName={roomName} />}
+                  {room.conversations
                     .filter(c => c.convoNumber !== lobbyNumber)
                     .map(convo => {
-                      const isEnlarged = enlargeConvo && enlargeConvo.convoName === convo.convoName;
-                      return (
-                        <div className="col-md-4">
-                          <Conversation
-                            convo={convo}
-                            isEnlarged={isEnlarged}
-                            setEnlargeConvo={setEnlargeConvo}
-                            key={convo.convoNumber}
-                          />
-                        </div>
-                      );
+                      const isMaximized = maximizedConvo && convo.convoNumber === maximizedConvo.convoNumber;
+                      if ((maximizedConvo && isMaximized) || !maximizedConvo) {
+                        return (
+                          <Col md={isMaximized ? 12 : 4}>
+                            <Conversation
+                              convo={convo}
+                              onLeave={leaveConvo}
+                              onJoin={(c) => setMaximizedConvo(c)}
+                              onMaximize={(c) => setMaximizedConvo(c)}
+                              onMinimize={() => setMaximizedConvo(null)}
+                              isMaximized={isMaximized}
+                              key={convo.convoNumber}
+                            />
+                          </Col>
+                        );
+                      } else {
+                        return null;
+                      }
                     })
                   }
                 </Row>

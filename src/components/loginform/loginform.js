@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import analytics, { CATEGORIES } from 'analytics/analytics';
 import Button from 'components/button/button';
 import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
@@ -20,6 +21,7 @@ const LoginForm = ({ roomName, onOpen }) => {
     document.getElementById('public').after(document.getElementById('root'));
     document.getElementById('public').style.display = 'none';
     MeActions.set(myName, myEmail)(dispatch);
+    analytics.event('login', CATEGORIES.USER);
     if (onOpen) onOpen();
   };
 

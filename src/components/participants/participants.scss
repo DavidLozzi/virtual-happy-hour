@@ -1,5 +1,19 @@
+@import "node_modules/bootstrap/scss/bootstrap";
+
 #participants {
-  .host {
-    font-weight: bold;
+  max-height: 574px;
+  overflow: scroll;
+
+  .participant {
+    display: inline-block;
+    width: 50%;
+  }
+
+  .badge {
+    margin-right: $spacer / 2;
+  }
+
+  .dropdown-toggle {
+    width: 100%;
   }
 }

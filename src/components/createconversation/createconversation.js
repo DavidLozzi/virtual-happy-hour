@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
+
+import analytics, { CATEGORIES } from 'analytics/analytics';
 import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
 import { name as MeName } from 'redux/api/me/me';
@@ -46,11 +48,13 @@ const CreateConversation = ({ roomName, onCreate, conversations }) => {
     const convo = setConvoOptions();
     RoomActions.add(convo, me, me)(dispatch);
     createRoomDone(convo);
+    analytics.event('create_convo', CATEGORIES.CONVO, newConvoName);
   };
 
   const createRoomDone = (convo) => {
     setNewConvoName('');
     setCreateConvo(false);
+    analytics.event('open_create_convo', CATEGORIES.CONVO);
     if (onCreate) onCreate(convo);
   };
 
