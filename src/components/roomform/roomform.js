@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import history from 'redux/history';
 
+import google from 'analytics/google';
 import Jumbotron from 'components/jumbotron/jumbotron';
 import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
@@ -11,6 +12,10 @@ const RoomForm = () => {
   const goToRoom = () => {
     if (roomName) history.push(`/${roomName}`);
   };
+
+  useEffect(() => {
+    google.pageView();
+  },[]);
 
   return (
     <Jumbotron>
