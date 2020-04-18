@@ -19,7 +19,9 @@ const initialState = {
 
 export const actions = {
   listen: () => async (dispatch) => {
+    debugger;
     mySocket.on('RoomDetails', room => { // room is an object with convos
+      debugger;
       dispatch({ type: API_CONVOS_LOAD_ROOM_SUCCESS, room })
     });
     mySocket.on('error', (error) => { // TODO alert users
@@ -29,6 +31,7 @@ export const actions = {
   },
   setRoom: (roomName) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_SET_ROOM' });
+    debugger;
     mySocket.emit('SetRoom', roomName);
   },
   add: (conversation, participant, host) => async (dispatch) => {

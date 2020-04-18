@@ -3,6 +3,8 @@ import { Row, Col } from 'react-bootstrap';
 
 import './counts.scss';
 
+// TODO update counts from the data
+
 const Counts = () => {
 
   return (

@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { name as MeName } from 'redux/api/me/me';
 import './participants.scss';
 
+// TODO add option to make someone else a host
+// TODO add option to invite someone to join you in your convo
+
 const Participants = ({ convo, options }) => {
   const myEmail = useSelector(state => state[MeName].participant.email);
 

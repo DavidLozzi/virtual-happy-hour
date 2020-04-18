@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
 import { useDispatch } from 'react-redux';
-import App from 'App';
 
 import Button from 'components/button/button';
 import InputGroup from 'components/inputgroup/inputgroup';
@@ -10,6 +8,7 @@ import Jumbotron from 'components/jumbotron/jumbotron';
 
 import { actions as MeActions } from 'redux/api/me/me';
 
+// TODO make both fields required
 
 const LoginForm = ({ roomName, onOpen }) => {
   const dispatch = useDispatch();

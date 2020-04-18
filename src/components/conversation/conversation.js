@@ -20,6 +20,7 @@ export const LAYOUTS = {
 };
 
 // TODO enable jitsi on mobile https://community.jitsi.org/t/enable-mobile-browser-in-jitsi-meet/29076/11?u=davidlozzi
+// TODO when I'm not in a convo, replace jitsi with a placeholder image
 
 const Conversation = ({ convo, isEnlarged, setEnlargeConvo, options, layout, viewOptions, topRight, bottomRight }) => {
   const dispatch = useDispatch();

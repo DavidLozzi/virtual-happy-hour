@@ -39,6 +39,7 @@ const Room = ({ match }) => {
   useEffect(() => {
     RoomActions.setRoom(roomName)(dispatch);
     RoomActions.listen()(dispatch);
+    debugger;
   }, [roomName, dispatch])
 
   useEffect(() => {
@@ -54,6 +55,7 @@ const Room = ({ match }) => {
       RoomActions.add(lobbyConvo, me, me)(dispatch);
     };
 
+    debugger;
     if (loadRoom) {
       const lobby = conversations.find(c => c.convoNumber === 0);
       if (!lobby) {
