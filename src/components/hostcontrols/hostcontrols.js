@@ -14,7 +14,7 @@ import './hostcontrols.scss';
 const HostControls = () => {
   const dispatch = useDispatch();
   const room = useSelector(state => state[RoomName].room);
-  const myEmail = useSelector(state => state[MeName].participant.email);
+  const me = useSelector(state => state[MeName].participant);
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -51,7 +51,7 @@ const HostControls = () => {
 
   const sendMessage = () => {
     analytics.event('Send Message', CATEGORIES.HOST_CONTROLS);
-    RoomActions.sendMessageToAll(room.roomName, room.conversations[0].participants, message)(dispatch);
+    RoomActions.sendMessageToAll(room.roomName, room.conversations[0].participants, `${message} from ${me.name}`)(dispatch);
     setShowMessageModal(false);
     setMessage('');
   };
@@ -62,7 +62,7 @@ const HostControls = () => {
         room.conversations
           .find(c => c.convoNumber === 0)
           .hosts
-          .find(h => h.email === myEmail) &&
+          .find(h => h.email === me.email) &&
         <Col md={12} id="hostcontrols">
           <ButtonGroup>
             <OverlayTrigger

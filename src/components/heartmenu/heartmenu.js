@@ -13,12 +13,12 @@ const HeartMenu = () => {
 
   const feedback = () => {
     analytics.event('feedback', CATEGORIES.LINKS);
-    window.open('https://paypal.me/davidlozzi');
+    window.open('https://github.com/DavidLozzi/virtual-happy-hour/issues/new?assignees=davidlozzi&labels=feature+request&template=feature_request.md&title=');
   }
 
   const bug = () => {
     analytics.event('bug', CATEGORIES.LINKS);
-    window.open('https://paypal.me/davidlozzi');
+    window.open('https://github.com/DavidLozzi/virtual-happy-hour/issues/new?assignees=davidlozzi&labels=bug&template=bug_report.md&title=');
   }
   const heartButton = React.forwardRef(({ children, onClick }, ref) => (
     <HeartFill
