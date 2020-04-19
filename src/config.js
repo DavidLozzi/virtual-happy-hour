@@ -14,6 +14,6 @@ export default {
     roomCss: '',
     canResize: true,
     hosts: [],
-    participants: [] // { name: '', email: '' }
+    participants: []
   })
 }

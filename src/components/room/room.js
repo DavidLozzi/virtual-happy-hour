@@ -42,11 +42,11 @@ const Room = ({ match }) => {
 
   useEffect(() => {
     if (roomName) {
-      analytics.pageView(`room-${roomName}`, `room ${roomName}`);
+      analytics.pageView(roomName, `room ${roomName}`);
       RoomActions.setRoom(roomName)(dispatch);
       RoomActions.listen()(dispatch);
     } else {
-      analytics.pageView('room-none', 'no room');
+      analytics.pageView('none', 'no room');
     }
   }, [roomName, dispatch])
 

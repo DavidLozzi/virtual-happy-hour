@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { name as MeName } from 'redux/api/me/me';
-import { ButtonGroup, Button, OverlayTrigger, Popover, Col } from 'react-bootstrap';
+import { ButtonGroup, Button, OverlayTrigger, Popover, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import analytics, { CATEGORIES } from 'analytics/analytics';
+
+import './hostcontrols.scss';
 
 // TODO have a host for the Lobby to control
 //    notify all to come to lobby
@@ -12,6 +15,8 @@ const HostControls = () => {
   const dispatch = useDispatch();
   const room = useSelector(state => state[RoomName].room);
   const myEmail = useSelector(state => state[MeName].participant.email);
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [message, setMessage] = useState('');
 
   const updateProp = (property, value) => {
     RoomActions.updateProperty(room.roomName, property, value)(dispatch);
@@ -25,13 +30,30 @@ const HostControls = () => {
     </Popover>
   );
 
+  const updateEnableConvo = () => {
+    analytics.event(room.enableConvo ? 'Disable Convos' : 'Enable Convos', CATEGORIES.HOST_CONTROLS);
+    updateProp('enableConvo', !room.enableConvo);
+  }
   const assignToConvos = () => {
+    analytics.event('Assign to Convos', CATEGORIES.HOST_CONTROLS);
     // TODO ask how many people per room, default to 4, then click and do it.
   };
 
+  const showSendMessage = () => {
+    analytics.event('Open Message', CATEGORIES.HOST_CONTROLS);
+    setShowMessageModal(true);
+  };
+
+  const hideSendMessage = () => {
+    analytics.event('Close Message', CATEGORIES.HOST_CONTROLS);
+    setShowMessageModal(false);
+  };
+
   const sendMessage = () => {
-    // TODO ask for the message and then send to everyone
-    // HOW? update all participants in lobby adding a message prop to them, when they ack clear it
+    analytics.event('Send Message', CATEGORIES.HOST_CONTROLS);
+    RoomActions.sendMessageToAll(room.roomName, room.conversations[0].participants, message)(dispatch);
+    setShowMessageModal(false);
+    setMessage('');
   };
 
   return (
@@ -48,7 +70,7 @@ const HostControls = () => {
               placement="bottom"
               overlay={makePopover(`Click to ${room.enableConvo ? 'not' : ''} allow participants to make their own conversations`)}
             >
-              <Button variant="primary" onClick={() => updateProp('enableConvo', !room.enableConvo)}>{room.enableConvo ? 'Disable' : 'Enable'} Conversations</Button>
+              <Button variant="primary" onClick={updateEnableConvo}>{room.enableConvo ? 'Disable' : 'Enable'} Conversations</Button>
             </OverlayTrigger>
             <OverlayTrigger
               trigger="hover"
@@ -62,9 +84,30 @@ const HostControls = () => {
               placement="bottom"
               overlay={makePopover(`Click to call everyone to come back to the lobby`)}
             >
-              <Button variant="primary" onClick={sendMessage}>Message Everyone</Button>
+              <Button variant="primary" onClick={showSendMessage}>Message Everyone</Button>
             </OverlayTrigger>
           </ButtonGroup>
+          <Modal
+            show={showMessageModal}
+            onHide={hideSendMessage}
+          >
+            <Modal.Header closeButton>Send a message to all participants</Modal.Header>
+            <Modal.Body>
+              <InputGroup className="mb-3">
+                <FormControl
+                  placeholder="Message"
+                  aria-label="Message"
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                />
+              </InputGroup>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" onClick={sendMessage}>
+                Send Message
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </Col>
       }
     </>

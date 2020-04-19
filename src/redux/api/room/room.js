@@ -56,6 +56,16 @@ export const actions = {
     dispatch({ type: 'API_CONVOS_UPDATE_PROPERTY' });
 
     mySocket.emit('UpdateRoomProperty', { roomName, property, value });
+  },
+  sendMessage: (roomName, to, message, action) => async (dispatch) => {
+    dispatch({ type: 'API_SEND_MESSAGE' });
+
+    mySocket.emit('SendMessage', { roomName, to, message, action });
+  },
+  sendMessageToAll: (roomName, participants, message, action) => async (dispatch) => {
+    dispatch({ type: 'API_SEND_MESSAGE_ALL' });
+
+    mySocket.emit('SendMessageToAll', { roomName, toAll: participants, message, action });
   }
 };
 

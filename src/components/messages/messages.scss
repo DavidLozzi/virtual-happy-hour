@@ -1,0 +1,26 @@
+#messages {
+  display: inline;
+
+  .dropleft {
+    display: inline;
+  }
+
+  .count {
+    font-size: 10px;
+    position: relative;
+    left: -20px;
+    top: 9px;
+  }
+
+  .dropdown-menu,
+  .dropdown-menu a {
+    color: #212529;
+  }
+
+  .alert {
+    display: inline-block;
+    margin-bottom: -10px;
+    margin-top: -10px;
+    padding: 0.50rem 1.25rem;
+  }
+}

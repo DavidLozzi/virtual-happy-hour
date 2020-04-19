@@ -5,7 +5,9 @@ export const CATEGORIES = {
   ROOM: 'room',
   USER: 'user',
   HOST_CONTROLS: 'hostcontrols',
-  CONVO: 'conversation'
+  CONVO: 'conversation',
+  LINKS: 'links',
+  MESSAGES: 'messages'
 }
 
 const analytics = {

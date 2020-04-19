@@ -1,8 +1,8 @@
 import React from 'react';
 import Conversation, { LAYOUTS } from 'components/conversation/conversation';
 import './lobbyconvo.scss';
-import HostControls from '../hostcontrols/hostcontrols';
-import Counts from '../counts/counts';
+import HostControls from 'components/hostcontrols/hostcontrols';
+import Counts from 'components/counts/counts';
 import { Row } from 'react-bootstrap';
 
 const LobbyConvo = ({ convo }) => {

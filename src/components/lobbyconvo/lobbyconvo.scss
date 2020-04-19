@@ -1,8 +1,4 @@
 #lobby {
-  h4 {
-    font-size: 1.7em
-  }
-
   .convoWrapper {
     width: 100%;
     margin: 0;
@@ -13,5 +9,10 @@
     height: 700px;
     display: block;
     margin: 0;
+  }
+
+  #participants {
+    height: 574px;
+    overflow: scroll;
   }
 }
