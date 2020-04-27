@@ -18,8 +18,8 @@ const Messages = () => {
   const [latestMessage, setLatestMessage] = useState('');
 
   useEffect(() => {
-    const myMessages = room.messages
-      .filter(m => m.to.email === me.email);
+    const myMessages = room.messages ? room.messages
+      .filter(m => m.to.email === me.email) : [];
 
     setMessageCount(myMessages.length);
     setMessages(myMessages);

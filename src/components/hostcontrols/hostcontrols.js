@@ -34,8 +34,14 @@ const HostControls = () => {
     analytics.event(room.enableConvo ? 'Disable Convos' : 'Enable Convos', CATEGORIES.HOST_CONTROLS);
     updateProp('enableConvo', !room.enableConvo);
   }
+
   const assignToConvos = () => {
     analytics.event('Assign to Convos', CATEGORIES.HOST_CONTROLS);
+    // TODO ask how many people per room, default to 4, then click and do it.
+  };
+
+  const closeConversations = () => {
+    analytics.event('Close Convos', CATEGORIES.HOST_CONTROLS);
     // TODO ask how many people per room, default to 4, then click and do it.
   };
 
@@ -64,7 +70,6 @@ const HostControls = () => {
           .hosts
           .find(h => h.email === me.email) &&
         <Col md={12} id="hostcontrols">
-          <ButtonGroup>
             <OverlayTrigger
               trigger="hover"
               placement="bottom"
@@ -75,18 +80,24 @@ const HostControls = () => {
             <OverlayTrigger
               trigger="hover"
               placement="bottom"
-              overlay={makePopover(`Click to assign everyone to random conversations`)}
+              overlay={makePopover(`Send a message to everyone in the room`)}
+            >
+              <Button variant="primary" onClick={showSendMessage}>Message Everyone</Button>
+            </OverlayTrigger>
+            <OverlayTrigger
+              trigger="hover"
+              placement="bottom"
+              overlay={makePopover(`COMING SOON: Click to assign everyone to random conversations`)}
             >
               <Button variant="primary" onClick={assignToConvos}>Assign to Conversations</Button>
             </OverlayTrigger>
             <OverlayTrigger
               trigger="hover"
               placement="bottom"
-              overlay={makePopover(`Click to call everyone to come back to the lobby`)}
+              overlay={makePopover(`COMING SOON: Close all conversations, except for the lobby, with a timely countdown.`)}
             >
-              <Button variant="primary" onClick={showSendMessage}>Message Everyone</Button>
+              <Button variant="primary" onClick={closeConversations}>Close Conversations</Button>
             </OverlayTrigger>
-          </ButtonGroup>
           <Modal
             show={showMessageModal}
             onHide={hideSendMessage}

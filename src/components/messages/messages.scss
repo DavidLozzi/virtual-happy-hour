@@ -3,6 +3,14 @@
 
   .dropleft {
     display: inline;
+
+    svg {
+      cursor: pointer;
+    }
+
+    a {
+      cursor: default;
+    }
   }
 
   .count {
