@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 // import './external_api';
 import './jitsi.scss';
@@ -57,6 +57,7 @@ const Jitsi = ({ options, commands, mute, className }) => {
       }
     });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -1,46 +1,39 @@
-export const API_ME_SET_PENDING = 'API_ME_SET_PENDING';
-export const API_ME_SET_SUCCESS = 'API_ME_SET_SUCCESS';
-export const API_ME_SET_FAILED = 'API_ME_SET_FAILED';
+import mySocket from 'components/sockets/mySocket';
+
+const ME_SET_SUCCESS = 'ME_SET_SUCCESS';
+const ME_PRIMARY_CONVO = 'ME_PRIMARY_CONVO';
 
 export const name = 'me';
 
 const initialState = {
-  participant: {},
-  loading: true,
-  error: false,
-  errorMessage: ''
+  participant: {
+    name: '',
+    email: '',
+    id: ''
+  },
+  primaryConvoNumber: 0
 };
 
 export const actions = {
   set: (myname, email) => async (dispatch) => {
-    dispatch({ type: API_ME_SET_PENDING });
-
-    dispatch({ type: API_ME_SET_SUCCESS, participant: { name: myname, email } });
+    dispatch({ type: ME_SET_SUCCESS, participant: { name: myname, email, id: mySocket.id } });
+  },
+  setPrimaryConvoNumber: (convoNumber = 0) => (dispatch) => {
+    dispatch({ type: ME_PRIMARY_CONVO, convoNumber});
   }
 };
 
 export function reducer(state = initialState, action) {
   switch (action.type) {
-    case API_ME_SET_PENDING:
+    case ME_SET_SUCCESS:
       return {
         ...state,
-        loading: true,
-        error: false,
-        errorMessage: ''
-      };
-    case API_ME_SET_FAILED:
-      return {
-        ...state,
-        loading: false,
-        error: true,
-        errorMessage: action.payload
-      };
-    case API_ME_SET_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        error: false,
         participant: action.participant
+      };
+    case ME_PRIMARY_CONVO:
+      return {
+        ...state,
+        primaryConvoNumber: action.convoNumber
       };
     default:
       return state;

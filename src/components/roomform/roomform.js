@@ -27,6 +27,7 @@ const RoomForm = () => {
           aria-label="Room Name"
           value={roomName}
           onChange={e => setRoomName(e.target.value)}
+          onEnter={goToRoom}
         />
         <InputGroup.Append>
           <Button variant="outline-secondary" onClick={goToRoom}>Let's Do This</Button>

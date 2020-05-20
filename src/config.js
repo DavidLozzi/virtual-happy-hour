@@ -3,17 +3,15 @@ export default {
   URLS: {
     SOCKET: process.env.REACT_APP_SOCKET_URL
   },
-  CONVERSATION_DEFAULTS: (convoNumber, roomName, roomTitle) => ({
-    height: 300,
-    width: 300,
+  CONVERSATION_DEFAULTS: (convoNumber, roomName, roomTitle, participants) => ({
+    height: 600,
+    width: 800,
     convoNumber,
     convoName: `lozzi-${roomName}-${convoNumber}`,
     roomName,
     loading: true,
     roomTitle,
     roomCss: '',
-    canResize: true,
-    hosts: [],
-    participants: []
+    participants: participants || []
   })
 }

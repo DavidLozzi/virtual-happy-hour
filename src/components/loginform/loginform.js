@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import analytics, { CATEGORIES } from 'analytics/analytics';
@@ -13,7 +13,7 @@ import { actions as MeActions } from 'redux/api/me/me';
 
 const LoginForm = ({ roomName, onOpen }) => {
   const dispatch = useDispatch();
-  const [myName, setMyName] = useState(''); // TODO get/set local storage
+  const [myName, setMyName] = useState('');
   const [myEmail, setMyEmail] = useState('');
 
   const openRoom = () => {
@@ -22,8 +22,15 @@ const LoginForm = ({ roomName, onOpen }) => {
     document.getElementById('public').style.display = 'none';
     MeActions.set(myName, myEmail)(dispatch);
     analytics.event('login', CATEGORIES.USER);
+    localStorage.setItem('myName', myName);
+    localStorage.setItem('myEmail', myEmail);
     if (onOpen) onOpen();
   };
+
+  useEffect(() => {
+    setMyName(localStorage.getItem('myName'));
+    setMyEmail(localStorage.getItem('myEmail'));
+  }, []);
 
   return (
     <Jumbotron>
@@ -40,6 +47,7 @@ const LoginForm = ({ roomName, onOpen }) => {
           aria-label="Your Name"
           value={myEmail}
           onChange={e => setMyEmail(e.target.value)}
+          onEnter={openRoom}
         />
       </InputGroup>
       <Button onClick={openRoom}>Let me in</Button>

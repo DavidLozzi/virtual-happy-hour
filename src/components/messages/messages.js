@@ -21,10 +21,12 @@ const Messages = () => {
     const myMessages = room.messages ? room.messages
       .filter(m => m.to.email === me.email) : [];
 
-    setMessageCount(myMessages.length);
-    setMessages(myMessages);
-    setLatestMessage(myMessages[0] && myMessages[0].message);
-  }, [room, me])
+    if (messageCount !== myMessages.length) {
+      setMessageCount(myMessages.length);
+      setMessages(myMessages);
+      setLatestMessage(myMessages[0] && myMessages[0].message);
+    }
+  }, [room, me, messageCount])
 
   useEffect(() => {
     if (latestMessage) {
@@ -35,18 +37,20 @@ const Messages = () => {
   }, [latestMessage]);
 
   const bellButton = React.forwardRef(({ children, onClick }, ref) => (
-    <>
+    <div
+      class="bellWrapper"
+      onClick={(e) => {
+        analytics.event('bell', CATEGORIES.MESSAGES);
+        e.preventDefault();
+        onClick(e);
+      }}
+      rel="button">
       <BellFill
         size={25}
         className="icon"
-        onClick={(e) => {
-          analytics.event('bell', CATEGORIES.MESSAGES);
-          e.preventDefault();
-          onClick(e);
-        }}
       />
       <Badge variant="danger" pill className="count">{messageCount}</Badge>
-    </>
+    </div>
   ))
   return (
     <div id="messages">
@@ -62,7 +66,7 @@ const Messages = () => {
           <Dropdown.Toggle as={bellButton} />
           <Dropdown.Menu>
             {messages.map(message => (
-              <Dropdown.Item>{message.message}</Dropdown.Item>
+              <Dropdown.Item key={message.date}>{message.message} at {message.date}</Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>

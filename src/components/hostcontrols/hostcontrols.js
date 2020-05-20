@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { name as MeName } from 'redux/api/me/me';
-import { ButtonGroup, Button, OverlayTrigger, Popover, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import InputGroup from 'components/inputgroup/inputgroup';
+import FormControl from 'components/formcontrol/formcontrol';
+import { Button, OverlayTrigger, Popover, Col, Modal } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
 import './hostcontrols.scss';
 
 // TODO have a host for the Lobby to control
 //    notify all to come to lobby
-//    enable/disbale creating convos
 
 const HostControls = () => {
   const dispatch = useDispatch();
@@ -65,9 +66,7 @@ const HostControls = () => {
   return (
     <>
       {
-        room.conversations
-          .find(c => c.convoNumber === 0)
-          .hosts
+        room.hosts
           .find(h => h.email === me.email) &&
         <Col md={12} id="hostcontrols">
             <OverlayTrigger
@@ -110,6 +109,7 @@ const HostControls = () => {
                   aria-label="Message"
                   value={message}
                   onChange={e => setMessage(e.target.value)}
+                  onEnter={sendMessage}
                 />
               </InputGroup>
             </Modal.Body>

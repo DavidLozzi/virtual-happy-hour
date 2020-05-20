@@ -19,7 +19,7 @@ const initialState = {
 
 export const actions = {
   listen: () => async (dispatch) => {
-    mySocket.on('RoomDetails', room => { // room is an object with convos
+    mySocket.on('RoomDetails', room => {
       dispatch({ type: API_CONVOS_LOAD_ROOM_SUCCESS, room })
     });
     mySocket.on('error', (error) => { // TODO alert users
@@ -31,16 +31,21 @@ export const actions = {
     dispatch({ type: 'API_CONVOS_SET_ROOM' });
     mySocket.emit('SetRoom', roomName);
   },
-  add: (conversation, participant, host) => async (dispatch) => {
+  addConvo: (conversation) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_ADD_CONVO' });
-
-    const newConvo = Object.assign(conversation, { participants: [participant], hosts: [host] });
-    mySocket.emit('NewConvo', newConvo);
+    mySocket.emit('NewConvo', conversation);
   },
   addParticipant: (conversation, participant) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_ADD_PARTICIPANT' });
-
     mySocket.emit('AddParticipant', { roomName: conversation.roomName, convoNumber: conversation.convoNumber, participant });
+  },
+  addHost: (roomName, participant) => async (dispatch) => {
+    dispatch({ type: 'API_CONVOS_ADD_HOST' });
+    mySocket.emit('AddHost', { roomName, participant });
+  },
+  removeHost: (roomName, participant) => async (dispatch) => {
+    dispatch({ type: 'API_CONVOS_REMOVE_HOST'});
+    mySocket.emit('RemoveHost', { roomName, participant });
   },
   removeMeFromOtherConvos: (conversation, participant) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_REMOVE_FROM_OTHER' });
