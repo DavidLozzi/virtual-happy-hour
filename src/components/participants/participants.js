@@ -62,7 +62,7 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
           .map((parti) => {
             const isHost = room.hosts.some(h => h.email === parti.email);
             const inConvo = room.conversations.find(c => c.participants.some(p => p.email === parti.email));
-            const showInvite = isRoom && (inConvo.convoNumber !== primaryConvoNumber);
+            const showInvite = isRoom && (inConvo && (inConvo.convoNumber !== primaryConvoNumber));
             const isMe = parti.email === me.email;
             return (
               <Dropdown key={parti.email}>
@@ -75,7 +75,7 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <div>email: {parti.email}</div>
-                  <div>Currently in {inConvo.roomTitle}
+                  <div>Currently in {inConvo && inConvo.roomTitle}
                     {showInvite &&
                       <OverlayTrigger
                         placement="top"

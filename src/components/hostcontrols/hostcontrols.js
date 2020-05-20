@@ -4,8 +4,9 @@ import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { name as MeName } from 'redux/api/me/me';
 import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
-import { Button, OverlayTrigger, Popover, Col, Modal } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Col, Modal, Form } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
+import AssignConvos from 'components/assignconvos/assignconvos';
 
 import './hostcontrols.scss';
 
@@ -36,11 +37,6 @@ const HostControls = () => {
     updateProp('enableConvo', !room.enableConvo);
   }
 
-  const assignToConvos = () => {
-    analytics.event('Assign to Convos', CATEGORIES.HOST_CONTROLS);
-    // TODO ask how many people per room, default to 4, then click and do it.
-  };
-
   const closeConversations = () => {
     analytics.event('Close Convos', CATEGORIES.HOST_CONTROLS);
     // TODO ask how many people per room, default to 4, then click and do it.
@@ -69,34 +65,21 @@ const HostControls = () => {
         room.hosts
           .find(h => h.email === me.email) &&
         <Col md={12} id="hostcontrols">
-            <OverlayTrigger
-              trigger="hover"
-              placement="bottom"
-              overlay={makePopover(`Click to ${room.enableConvo ? 'not' : ''} allow participants to make their own conversations`)}
-            >
-              <Button variant="primary" onClick={updateEnableConvo}>{room.enableConvo ? 'Disable' : 'Enable'} Conversations</Button>
-            </OverlayTrigger>
-            <OverlayTrigger
-              trigger="hover"
-              placement="bottom"
-              overlay={makePopover(`Send a message to everyone in the room`)}
-            >
-              <Button variant="primary" onClick={showSendMessage}>Message Everyone</Button>
-            </OverlayTrigger>
-            <OverlayTrigger
-              trigger="hover"
-              placement="bottom"
-              overlay={makePopover(`COMING SOON: Click to assign everyone to random conversations`)}
-            >
-              <Button variant="primary" onClick={assignToConvos}>Assign to Conversations</Button>
-            </OverlayTrigger>
-            <OverlayTrigger
-              trigger="hover"
-              placement="bottom"
-              overlay={makePopover(`COMING SOON: Close all conversations, except for the lobby, with a timely countdown.`)}
-            >
-              <Button variant="primary" onClick={closeConversations}>Close Conversations</Button>
-            </OverlayTrigger>
+          <OverlayTrigger
+            trigger="hover"
+            placement="bottom"
+            overlay={makePopover(`Click to ${room.enableConvo ? 'not' : ''} allow participants to make their own conversations`)}
+          >
+            <Button variant="primary" onClick={updateEnableConvo}>{room.enableConvo ? 'Disable' : 'Enable'} Conversations</Button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            trigger="hover"
+            placement="bottom"
+            overlay={makePopover(`Send a message to everyone in the room`)}
+          >
+            <Button variant="primary" onClick={showSendMessage}>Message Everyone</Button>
+          </OverlayTrigger>
           <Modal
             show={showMessageModal}
             onHide={hideSendMessage}
@@ -119,6 +102,16 @@ const HostControls = () => {
               </Button>
             </Modal.Footer>
           </Modal>
+
+          <AssignConvos />
+
+          <OverlayTrigger
+            trigger="hover"
+            placement="bottom"
+            overlay={makePopover(`COMING SOON: Close all conversations, except for the lobby, with a timely countdown.`)}
+          >
+            <Button variant="primary" onClick={closeConversations}>Close Conversations</Button>
+          </OverlayTrigger>
         </Col>
       }
     </>

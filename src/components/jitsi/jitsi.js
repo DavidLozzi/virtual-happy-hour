@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 // import './external_api';
 import './jitsi.scss';
@@ -7,12 +7,20 @@ import './jitsi.scss';
 export const JitsiSubject = new Subject();
 
 // TODO gotta support mobile browser
-const Jitsi = ({ options, commands, mute, className }) => {
+const Jitsi = ({ options, commands, mute, className, convoNumber }) => {
+  const [buildJitsi, setBuildJitsi] = useState(true);
+  const [jitsiApi, setJitsiApi] = useState();
 
   useEffect(() => {
+    if (jitsiApi) {
+      jitsiApi.dispose();
+      setJitsiApi();
+      console.log('destroyed jitsi');
+    }
+    console.log('building jitsi');
     const newOptions = Object.assign(options,
       {
-        roomName: options.convoName,
+        roomName: options.roomTitle,
         generateRoom: false,
         parentNode: document.getElementById(options.convoName),
         interfaceConfigOverwrite: {
@@ -45,7 +53,7 @@ const Jitsi = ({ options, commands, mute, className }) => {
 
     // JitsiSubject.next({ type: 'new', options: newOptions, api });
 
-    JitsiSubject.subscribe(({type, convo}) => {
+    JitsiSubject.subscribe(({ type, convo }) => {
       if (type === 'mute') {
         if (convo.convoName !== options.roomName) {
           api.isAudioMuted().then(muted => {
@@ -56,9 +64,8 @@ const Jitsi = ({ options, commands, mute, className }) => {
         }
       }
     });
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setJitsiApi(api);
+  }, [convoNumber]);
 
   return (
     <div id={options.convoName} className={`convo ${className} ${mute ? 'muted' : ''}`} />

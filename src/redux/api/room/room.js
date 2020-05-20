@@ -47,11 +47,6 @@ export const actions = {
     dispatch({ type: 'API_CONVOS_REMOVE_HOST'});
     mySocket.emit('RemoveHost', { roomName, participant });
   },
-  removeMeFromOtherConvos: (conversation, participant) => async (dispatch) => {
-    dispatch({ type: 'API_CONVOS_REMOVE_FROM_OTHER' });
-
-    mySocket.emit('RemoveFromOtherConvos', { roomName: conversation.roomName, convoNumber: conversation.convoNumber, participant })
-  },
   removeMeFromThisConvo: (conversation, participant) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_REMOVE_FROM_CONVO' });
 

@@ -34,7 +34,6 @@ const Conversation = ({ room, convo }) => {
   const joinConvo = (convo) => {
     if (convo) {
       RoomActions.addParticipant(convo, me)(dispatch);
-      RoomActions.removeMeFromOtherConvos(convo, me)(dispatch);
       MeActions.setPrimaryConvoNumber(convo.convoNumber)(dispatch);
       trackEvent('join', convo);
     }
@@ -58,6 +57,7 @@ const Conversation = ({ room, convo }) => {
                 options={{ ...convo }}
                 commands={defaultJitsiCommands}
                 mute={true}
+                convoNumber={convo.convoNumber}
               />
             }
           </Col>

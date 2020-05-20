@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import CONFIG from 'config';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
-import { name as MeName } from 'redux/api/me/me';
+import { name as MeName, actions as MeActions } from 'redux/api/me/me';
 
 import LoginForm from 'components/loginform/loginform';
 import Conversation from 'components/conversation/conversation';
@@ -17,7 +17,6 @@ const Room = ({ match }) => {
   const dispatch = useDispatch();
   const room = useSelector(state => state[RoomName].room);
   const me = useSelector(state => state[MeName].participant);
-  const primaryConvoNumber = useSelector(state => state[MeName].primaryConvoNumber);
   const [loadRoom, setLoadRoom] = useState(false);
   const [primaryConvo, setPrimaryConvo] = useState();
 
@@ -61,14 +60,15 @@ const Room = ({ match }) => {
 
   useEffect(() => {
     if (loadRoom) {
-      const myConvo = room.conversations.filter(c => c.convoNumber === primaryConvoNumber);
+      const myConvo = room.conversations.filter(c => c.participants.some(p => p.email === me.email));
       if (myConvo && myConvo.length === 1) {
         setPrimaryConvo(myConvo[0]);
-      } else {
+        MeActions.setPrimaryConvoNumber(myConvo[0].convoNumber)(dispatch);
+      } else { // if it happens, there was an oopsy, send to lobby
         setPrimaryConvo(room.conversations.find(c => c.convoNumber === lobbyNumber));
       }
     }
-  }, [primaryConvoNumber, room, loadRoom])
+  }, [room, loadRoom, me])
 
 
   return (
