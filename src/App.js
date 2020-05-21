@@ -12,8 +12,6 @@ import history from 'redux/history';
 import Room from 'components/room/room';
 import RoomForm from 'components/roomform/roomform';
 
-import 'assets/images/hero.png'; // used in CSS
-
 function App() {
   return (
     <Provider store={store}>

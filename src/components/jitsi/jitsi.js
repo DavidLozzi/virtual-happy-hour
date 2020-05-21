@@ -8,7 +8,6 @@ export const JitsiSubject = new Subject();
 
 // TODO gotta support mobile browser
 const Jitsi = ({ options, commands, mute, className, convoNumber }) => {
-  const [buildJitsi, setBuildJitsi] = useState(true);
   const [jitsiApi, setJitsiApi] = useState();
 
   useEffect(() => {

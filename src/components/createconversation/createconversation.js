@@ -26,7 +26,6 @@ const CreateConversation = ({ room, onCreate }) => {
   const [createConvo, setCreateConvo] = useState(false);
   const [newConvoName, setNewConvoName] = useState(`Convo with ${me.name}`);
   const [iAmHost, setIAmHost] = useState(false);
-  const [newConvoCreated, setNewConvoCreated] = useState();
   const { conversations, roomName, enableConvo, hosts } = room;
 
   useEffect(() => {
@@ -52,8 +51,7 @@ const CreateConversation = ({ room, onCreate }) => {
     RoomActions.addConvo(convo)(dispatch);
     analytics.event('created_convo', CATEGORIES.CONVO, newConvoName);
     createRoomDone();
-    setNewConvoCreated(convo);
-    if(onCreate) onCreate(convo);
+    if (onCreate) onCreate(convo);
   };
 
   const createRoomDone = () => {
@@ -68,22 +66,22 @@ const CreateConversation = ({ room, onCreate }) => {
       {(enableConvo || iAmHost) &&
         <div className="col-md-12">
           {!createConvo &&
-            <Button onClick={openCreateConvo}>New Convo</Button>
+            <Button onClick={openCreateConvo}>New</Button>
           }
           {createConvo &&
-            <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Conversation Name"
-                aria-label="Conversation Name"
-                value={newConvoName}
-                onChange={e => setNewConvoName(e.target.value)}
-                onEnter={createNewConversationClick}
-              />
-              <InputGroup.Append>
-                <Button variant="outline-secondary" onClick={createNewConversationClick}>Create</Button>
-                <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
-              </InputGroup.Append>
-            </InputGroup>
+            <>
+              <InputGroup className="mb-3">
+                <FormControl
+                  placeholder="Conversation Name"
+                  aria-label="Conversation Name"
+                  value={newConvoName}
+                  onChange={e => setNewConvoName(e.target.value)}
+                  onEnter={createNewConversationClick}
+                />
+              </InputGroup>
+              <Button variant="outline-secondary" onClick={createNewConversationClick}>Create</Button>
+              <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
+            </>
           }
         </div>
       }

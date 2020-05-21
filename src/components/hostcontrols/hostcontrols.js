@@ -4,7 +4,7 @@ import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { name as MeName } from 'redux/api/me/me';
 import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
-import { Button, OverlayTrigger, Popover, Col, Modal, Form } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Col, Modal, Dropdown } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 import AssignConvos from 'components/assignconvos/assignconvos';
 
@@ -65,53 +65,60 @@ const HostControls = () => {
         room.hosts
           .find(h => h.email === me.email) &&
         <Col md={12} id="hostcontrols">
-          <OverlayTrigger
-            trigger="hover"
-            placement="bottom"
-            overlay={makePopover(`Click to ${room.enableConvo ? 'not' : ''} allow participants to make their own conversations`)}
-          >
-            <Button variant="primary" onClick={updateEnableConvo}>{room.enableConvo ? 'Disable' : 'Enable'} Conversations</Button>
-          </OverlayTrigger>
+          <Dropdown>
+            <Dropdown.Toggle>
+              Host Controls
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <OverlayTrigger
+                trigger="hover"
+                placement="bottom"
+                overlay={makePopover(`Click to ${room.enableConvo ? 'not' : ''} allow participants to make their own conversations`)}
+              >
+                <Dropdown.Item variant="primary" onClick={updateEnableConvo}>{room.enableConvo ? 'Disable' : 'Enable'} Conversations</Dropdown.Item>
+              </OverlayTrigger>
 
-          <OverlayTrigger
-            trigger="hover"
-            placement="bottom"
-            overlay={makePopover(`Send a message to everyone in the room`)}
-          >
-            <Button variant="primary" onClick={showSendMessage}>Message Everyone</Button>
-          </OverlayTrigger>
-          <Modal
-            show={showMessageModal}
-            onHide={hideSendMessage}
-          >
-            <Modal.Header closeButton>Send a message to all participants</Modal.Header>
-            <Modal.Body>
-              <InputGroup className="mb-3">
-                <FormControl
-                  placeholder="Message"
-                  aria-label="Message"
-                  value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  onEnter={sendMessage}
-                />
-              </InputGroup>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="primary" onClick={sendMessage}>
-                Send Message
+              <OverlayTrigger
+                trigger="hover"
+                placement="bottom"
+                overlay={makePopover(`Send a message to everyone in the room`)}
+              >
+                <Dropdown.Item variant="primary" onClick={showSendMessage}>Message Everyone</Dropdown.Item>
+              </OverlayTrigger>
+              <Modal
+                show={showMessageModal}
+                onHide={hideSendMessage}
+              >
+                <Modal.Header closeButton>Send a message to all participants</Modal.Header>
+                <Modal.Body>
+                  <InputGroup className="mb-3">
+                    <FormControl
+                      placeholder="Message"
+                      aria-label="Message"
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
+                      onEnter={sendMessage}
+                    />
+                  </InputGroup>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="primary" onClick={sendMessage}>
+                    Send Message
               </Button>
-            </Modal.Footer>
-          </Modal>
+                </Modal.Footer>
+              </Modal>
 
-          <AssignConvos />
+              <AssignConvos />
 
-          <OverlayTrigger
-            trigger="hover"
-            placement="bottom"
-            overlay={makePopover(`COMING SOON: Close all conversations, except for the lobby, with a timely countdown.`)}
-          >
-            <Button variant="primary" onClick={closeConversations}>Close Conversations</Button>
-          </OverlayTrigger>
+              <OverlayTrigger
+                trigger="hover"
+                placement="bottom"
+                overlay={makePopover(`COMING SOON: Close all conversations, except for the lobby, with a timely countdown.`)}
+              >
+                <Dropdown.Item variant="primary" onClick={closeConversations}>Close Conversations</Dropdown.Item>
+              </OverlayTrigger>
+            </Dropdown.Menu>
+          </Dropdown>
         </Col>
       }
     </>

@@ -10,7 +10,7 @@ import Conversation from 'components/conversation/conversation';
 import Header from 'components/header/header';
 
 import './room.scss';
-import { Container, Row, Col, Jumbotron } from 'react-bootstrap';
+import { Container, Jumbotron } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
 const Room = ({ match }) => {

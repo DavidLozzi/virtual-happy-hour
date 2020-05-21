@@ -23,7 +23,9 @@ const Header = () => {
         <Navbar.Text>
           <Messages />
           <HeartMenu />
-          {me.name}
+          <div id="me">
+            {me.name}
+          </div>
         </Navbar.Text>
       </Navbar.Collapse>
     </Navbar>

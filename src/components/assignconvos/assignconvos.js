@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
-import { name as MeName } from 'redux/api/me/me';
-import InputGroup from 'components/inputgroup/inputgroup';
-import FormControl from 'components/formcontrol/formcontrol';
-import { Button, OverlayTrigger, Popover, Col, Modal, Form } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Dropdown, Modal, Form } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 import CONFIG from 'config';
 
@@ -99,7 +96,7 @@ const AssignConvos = () => {
         </Popover.Content>
         </Popover>}
       >
-        <Button variant="primary" onClick={showAssign}>Assign to Conversations</Button>
+        <Dropdown.Item variant="primary" onClick={showAssign}>Assign to Conversations</Dropdown.Item>
       </OverlayTrigger>
       <Modal
         show={showAssignModal}

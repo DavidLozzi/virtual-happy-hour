@@ -8,7 +8,6 @@ import { actions as RoomActions } from 'redux/api/room/room';
 import Jitsi from 'components/jitsi/jitsi';
 import Participants from 'components/participants/participants';
 import HostControls from 'components/hostcontrols/hostcontrols';
-import CreateConversation from 'components/createconversation/createconversation';
 import ConversationList from 'components/conversationlist/conversationlist';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
@@ -66,10 +65,9 @@ const Conversation = ({ room, convo }) => {
               <Row noGutters><HostControls /></Row>
               <Row noGutters><Participants participants={convo.participants} listTitle={convo.roomTitle} isConvo /></Row>
               <Row noGutters>
-                <Col sm={6}><ConversationList room={room} onJoin={joinConvo} /></Col>
-                <Col sm={6}><CreateConversation room={room} onCreate={joinConvo} /></Col>
-              <Row noGutters><Participants participants={room.participants} listTitle={`Room: ${room.roomName}`} isRoom onJoin={joinConvo} /></Row>
+                <Col sm={12}><ConversationList room={room} onJoin={joinConvo} /></Col>
               </Row>
+              <Row noGutters><Participants participants={room.participants} listTitle={`Room: ${room.roomName}`} isRoom onJoin={joinConvo} /></Row>
             </Container>
           </Col>
         </Row>

@@ -74,8 +74,7 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
                   </div>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <div>email: {parti.email}</div>
-                  <div>Currently in {inConvo && inConvo.roomTitle}
+                  <div className="dropdown-item">Talking in {inConvo && inConvo.roomTitle}
                     {showInvite &&
                       <OverlayTrigger
                         placement="top"

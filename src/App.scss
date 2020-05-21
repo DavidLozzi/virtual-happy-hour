@@ -1,46 +1,18 @@
 @import "~bootstrap/scss/bootstrap";
 
-#public {
-  .myHero {
-    background: linear-gradient(90deg, rgba(50, 50, 50, 0.3), rgba(0, 0, 0, 0.3)), url(/static/media/hero.0925318b.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+.dropdown-toggle {
+  width: 100%;
+}
 
-    h1,
-    .whiteText {
-      color: white;
-      text-shadow: 2px 2px 4px #000;
+.dropdown-menu {
+  font-size: .85rem;
+}
 
-      .badge {
-        text-shadow: none;
-      }
-    }
+.dropdown-item {
+  padding-left: .1rem;
+  font-size: .85rem;
+}
 
-    .whiteText {
-      background: rgba(0,0,0,0.7);
-      padding: 20px;
-    }
-  }
-  .content{
-    &.container {
-      padding: 50px;
-    }
-
-    &.gray {
-      background-color: #e9ecef
-    }
-  }
-
-  .footer {
-    padding-top: 50px;
-    padding-bottom: 30px;
-    background-color: #444;
-    color: #fff;
-
-    div {
-      text-align: center;
-      padding: 10px 30px;
-    }
-  }
+.btn {
+  font-size: .85rem !important;
 }
