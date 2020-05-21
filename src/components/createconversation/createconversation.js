@@ -66,7 +66,7 @@ const CreateConversation = ({ room, onCreate }) => {
       {(enableConvo || iAmHost) &&
         <div className="col-md-12">
           {!createConvo &&
-            <Button onClick={openCreateConvo}>New</Button>
+            <Button onClick={openCreateConvo} variant="link">Create New Conversation</Button>
           }
           {createConvo &&
             <>

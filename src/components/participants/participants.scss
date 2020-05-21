@@ -1,16 +1,22 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
 #participants {
-  height: 250px;
+  height: 230px;
   width: 100%;
   overflow: scroll;
+  margin-bottom: 10px;
 
   .participant {
     display: inline-block;
-    width: 50%;
+    width: 90%;
   }
 
   .badge {
     margin-right: $spacer / 2;
+  }
+
+  .h5 {
+    padding-top: .6em;
+    margin-bottom: 0em;
   }
 }

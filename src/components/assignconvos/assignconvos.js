@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { Button, OverlayTrigger, Popover, Dropdown, Modal, Form } from 'react-bootstrap';
@@ -13,6 +13,20 @@ const AssignConvos = () => {
   const [assignRoomList, setAssignRoomList] = useState('Movies\nTV\nPets\nCooking\nHome Improvement\nExercise\nCoffee\nFamily\nGadgets');
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [totalConvos, setTotalConvos] = useState(0);
+  const [participantCount, setParticipantCount] = useState(0);
+  const [lobby, setLobby] = useState();
+
+  useEffect(() => {
+    const lobbyConvo = room.conversations.find(c => c.convoNumber === 0);
+    const partiCount = lobbyConvo.participants.length;
+    setLobby(lobbyConvo);
+    setParticipantCount(partiCount);
+  }, [room]);
+
+  useEffect(() => {
+    setTotalConvos(Math.ceil(participantCount / assignNumber))
+  }, [assignNumber, participantCount]);
 
   const showAssign = () => {
     analytics.event('Open Assign to Convos', CATEGORIES.HOST_CONTROLS);
@@ -35,14 +49,11 @@ const AssignConvos = () => {
   const assignToConvos = () => {
     setIsProcessing(true);
     analytics.event('Assign to Convos', CATEGORIES.HOST_CONTROLS);
-    const lobby = room.conversations.find(c => c.convoNumber === 0);
-    const participantCount = lobby.participants.length;
     if (participantCount <= assignNumber) {
       setStatusMessage('The number of people per conversation exceeds the number of people in the lobby');
       setIsProcessing(false);
     } else {
       const peopleList = [...lobby.participants]; // maybe entire room instead?
-      const totalConvos = Math.ceil(participantCount / assignNumber);
       const convoNames = assignRoomList.split('\n');
       let convoNumber = room.conversations.sort(sortByconvoNumber).splice(-1)[0].convoNumber + 10; // just feels right to go further out
       const newConvoNumbers = [];
@@ -63,11 +74,11 @@ const AssignConvos = () => {
         analytics.event('created_convo', CATEGORIES.HOST_CONTROLS, `${randomConvoName}`);
       }
 
-      setStatusMessage('Assign everyone to conversations');
+      setStatusMessage('Assigning everyone to conversations');
       for (let i = 0; i < newConvoNumbers.length; i++) {
-        if(peopleList.length === 0) break;
+        if (peopleList.length === 0) break;
         let randomPersonIndex = 0;
-        if(peopleList.length > 1) {
+        if (peopleList.length > 1) {
           randomPersonIndex = Math.round(Math.random()) * (peopleList.length - 1);
         }
         const randomPerson = peopleList.splice(randomPersonIndex, 1)[0];
@@ -75,10 +86,11 @@ const AssignConvos = () => {
         RoomActions.addParticipant({ roomName: room.roomName, convoNumber: newConvoNumbers[i] }, randomPerson)(dispatch);
         analytics.event('join_convo', CATEGORIES.HOST_CONTROLS);
 
-        if(i === newConvoNumbers.length - 1) {
+        if (i === newConvoNumbers.length - 1) {
           i = 0;
         }
       }
+      setStatusMessage('');
       setIsProcessing(false);
       setShowAssignModal(false);
       setAssignNumber(5);
@@ -104,11 +116,12 @@ const AssignConvos = () => {
       >
         <Modal.Header closeButton>Assign all people in lobby to new conversations</Modal.Header>
         <Modal.Body>
-          {statusMessage}
+          <p>{statusMessage}</p>
           {!isProcessing &&
             <Form>
               <Form.Group controlId="formnumberofpeople">
                 <Form.Label>Number of people per conversation</Form.Label>
+                <Form.Text>There are {participantCount} people in the lobby, specify how many people you'd like in each conversation.</Form.Text>
                 <Form.Control
                   placeholder="# people / conversations"
                   value={assignNumber}
@@ -116,7 +129,22 @@ const AssignConvos = () => {
                 />
                 <Form.Text className="text-muted">
                   We recommend about 5 people per conversation to help enable meaningful connections
-            </Form.Text>
+                </Form.Text>
+                <Form.Text>
+                  {assignNumber < participantCount &&
+                    <>
+                      {assignNumber > 1 &&
+                        <>At {assignNumber} people, this will create {totalConvos} conversations.</>
+                      }
+                      {assignNumber === 1 &&
+                        <>C'mon, they can't talk by ourselves, select a number greater than 1 please.</>
+                      }
+                    </>
+                  }
+                  {assignNumber >= participantCount &&
+                    <>The number of people per conversation exceeds the number of people in the lobby</>
+                  }
+                </Form.Text>
               </Form.Group>
 
               <Form.Group controlId="formlistofnames">

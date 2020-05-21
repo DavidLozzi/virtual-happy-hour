@@ -56,7 +56,8 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
 
   return (
     <div id="participants">
-      <h5>Who's in {listTitle}</h5>
+      <p class="h5">Who's in {listTitle}</p>
+      <div className="text-right"><small className="text-muted">{participants.length} {participants.length === 1 ? 'person' : 'people'}</small></div>
       {
         participants
           .map((parti) => {

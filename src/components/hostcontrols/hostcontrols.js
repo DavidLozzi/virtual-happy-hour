@@ -66,7 +66,7 @@ const HostControls = () => {
           .find(h => h.email === me.email) &&
         <Col md={12} id="hostcontrols">
           <Dropdown>
-            <Dropdown.Toggle>
+            <Dropdown.Toggle variant="outline-dark">
               Host Controls
             </Dropdown.Toggle>
             <Dropdown.Menu>
