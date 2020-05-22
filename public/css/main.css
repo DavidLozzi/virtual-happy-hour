@@ -3239,6 +3239,11 @@ input, select, textarea {
     font-size: 25px;
   }
 
+  #public .badge {
+    top: -4px;
+    position: relative;
+  }
+
 	#menu {
 		-moz-align-items: center;
 		-webkit-align-items: center;
