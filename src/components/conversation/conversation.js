@@ -15,6 +15,7 @@ import './conversation.scss';
 
 // TODO enable jitsi on mobile https://community.jitsi.org/t/enable-mobile-browser-in-jitsi-meet/29076/11?u=davidlozzi
 // move master participant list to the room, but never lose lobby
+// TODO can we edit the convo name?
 
 const Conversation = ({ room, convo }) => {
   const dispatch = useDispatch();

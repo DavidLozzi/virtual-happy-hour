@@ -44,7 +44,7 @@ const Jitsi = ({ options, commands, mute, className, convoNumber }) => {
     // eslint-disable-next-line no-undef
     const api = new JitsiMeetExternalAPI('meet.jit.si', newOptions);
 
-    api.addEventListener('audioMuteStatusChanged', ({ muted }) => JitsiSubject.next({ type: 'mute', convo: options }));
+    // api.addEventListener('audioMuteStatusChanged', ({ muted }) => JitsiSubject.next({ type: 'mute', convo: options }));
     api.executeCommands(commands);
 
     const iframe = window.document.getElementById(options.convoName).getElementsByTagName('iframe')[0];
@@ -52,17 +52,17 @@ const Jitsi = ({ options, commands, mute, className, convoNumber }) => {
 
     // JitsiSubject.next({ type: 'new', options: newOptions, api });
 
-    JitsiSubject.subscribe(({ type, convo }) => {
-      if (type === 'mute') {
-        if (convo.convoName !== options.roomName) {
-          api.isAudioMuted().then(muted => {
-            if (!muted) {
-              api.executeCommand('toggleAudio');
-            }
-          });
-        }
-      }
-    });
+    // JitsiSubject.subscribe(({ type, convo }) => {
+    //   if (type === 'mute') {
+    //     if (convo.convoName !== options.roomName) {
+    //       api.isAudioMuted().then(muted => {
+    //         if (!muted) {
+    //           api.executeCommand('toggleAudio');
+    //         }
+    //       });
+    //     }
+    //   }
+    // });
     setJitsiApi(api);
   }, [convoNumber]);
 

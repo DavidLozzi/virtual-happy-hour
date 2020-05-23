@@ -21,7 +21,7 @@ const ConversationList = ({ room, onJoin }) => {
       </Dropdown.Toggle>
       <Dropdown.Menu>
         {room.conversations.map(convo => (
-          <Dropdown.Item key={convo.convoNumber}>
+          <Dropdown.Item key={convo.convoNumber} onClick={() => { onJoin(convo) }} >
             {convo.roomTitle}
             {convo.convoNumber === primaryConvoNumber &&
               <OverlayTrigger
@@ -35,7 +35,7 @@ const ConversationList = ({ room, onJoin }) => {
                 placement="top"
                 overlay={<Tooltip id="people">Click to join this conversation</Tooltip>}
               >
-                <Badge variant="success" onClick={() => { onJoin(convo) }} size={25}>join</Badge>
+                <Badge variant="success" size={25}>join</Badge>
               </OverlayTrigger>}
             <OverlayTrigger
               placement="top"
