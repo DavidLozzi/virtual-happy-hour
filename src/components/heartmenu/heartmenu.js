@@ -11,6 +11,11 @@ const HeartMenu = () => {
     window.open('https://paypal.me/davidlozzi');
   }
 
+  const coffee = () => {
+    analytics.event('coffee', CATEGORIES.LINKS);
+    window.open('https://www.buymeacoffee.com/davidlozzi');
+  }
+
   const feedback = () => {
     analytics.event('feedback', CATEGORIES.LINKS);
     window.open('https://github.com/DavidLozzi/virtual-happy-hour/issues/new?assignees=davidlozzi&labels=feature+request&template=feature_request.md&title=');
@@ -35,6 +40,7 @@ const HeartMenu = () => {
       <Dropdown.Toggle as={heartButton} />
       <Dropdown.Menu>
         <Dropdown.Item onClick={donate}>Love it? Please Donate</Dropdown.Item>
+        <Dropdown.Item onClick={coffee}>Love it? Buy me a coffee</Dropdown.Item>
         <Dropdown.Item onClick={feedback}>Feedback or Feature Request</Dropdown.Item>
         <Dropdown.Item onClick={bug}>Report a Bug</Dropdown.Item>
       </Dropdown.Menu>
