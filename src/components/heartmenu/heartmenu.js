@@ -18,13 +18,9 @@ const HeartMenu = () => {
 
   const feedback = () => {
     analytics.event('feedback', CATEGORIES.LINKS);
-    window.open('https://github.com/DavidLozzi/virtual-happy-hour/issues/new?assignees=davidlozzi&labels=feature+request&template=feature_request.md&title=');
+    window.open('https://forms.office.com/Pages/ResponsePage.aspx?id=eBIX0mRBW0qcSNE8o8S4uV77t6Bb_nVGrH1y5i3LkuBUQUFFRlRJMTlGVjNSUkdXRUlOUkgwNVlaRS4u');
   }
 
-  const bug = () => {
-    analytics.event('bug', CATEGORIES.LINKS);
-    window.open('https://github.com/DavidLozzi/virtual-happy-hour/issues/new?assignees=davidlozzi&labels=bug&template=bug_report.md&title=');
-  }
   const heartButton = React.forwardRef(({ children, onClick }, ref) => (
     <HeartFill
       size={25}
@@ -41,8 +37,7 @@ const HeartMenu = () => {
       <Dropdown.Menu>
         <Dropdown.Item onClick={donate}>Love it? Please Donate</Dropdown.Item>
         <Dropdown.Item onClick={coffee}>Love it? Buy me a coffee</Dropdown.Item>
-        <Dropdown.Item onClick={feedback}>Feedback or Feature Request</Dropdown.Item>
-        <Dropdown.Item onClick={bug}>Report a Bug</Dropdown.Item>
+        <Dropdown.Item onClick={feedback}>Share Feedback or Issue</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   )
