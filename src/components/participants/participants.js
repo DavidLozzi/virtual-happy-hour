@@ -18,8 +18,10 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
 
   const makeHost = (host) => {
     analytics.event('Make host', CATEGORIES.PARTICIPANTS);
-    RoomActions.addHost(room.roomName, host)(dispatch);
-    RoomActions.sendMessage(room.roomName, host, `You've been made a host by ${me.name}`)(dispatch);
+    RoomActions.addHost(room.roomName, host, () => {
+      RoomActions.sendMessage(room.roomName, host, `You've been made a host by ${me.name}`)(dispatch);
+    })(dispatch);
+    
   }
 
   const removeHost = (host) => {

@@ -39,9 +39,11 @@ export const actions = {
     dispatch({ type: 'API_CONVOS_ADD_PARTICIPANT' });
     mySocket.emit('AddParticipant', { roomName: conversation.roomName, convoNumber: conversation.convoNumber, participant });
   },
-  addHost: (roomName, participant) => async (dispatch) => {
+  addHost: (roomName, participant, callBack) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_ADD_HOST' });
-    mySocket.emit('AddHost', { roomName, participant });
+    mySocket.emit('AddHost', { roomName, participant }, (data) => {
+      if(callBack) callBack();
+    });
   },
   removeHost: (roomName, participant) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_REMOVE_HOST'});
