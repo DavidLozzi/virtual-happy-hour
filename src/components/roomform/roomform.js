@@ -14,7 +14,7 @@ const RoomForm = () => {
   };
 
   useEffect(() => {
-    analytics.pageView('roomform',CATEGORIES.ROOM);
+    analytics.pageView('roomform',CATEGORIES.SITE);
   },[]);
 
   return (

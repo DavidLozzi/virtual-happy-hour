@@ -10,43 +10,36 @@ import './conversationlist.scss';
 const ConversationList = ({ room, onJoin }) => {
   const primaryConvoNumber = useSelector(state => state[MeName].primaryConvoNumber);
 
-  const dropdownClicked = () => {
-    analytics.event('open_convo_list', CATEGORIES.CONVO);
-  };
 
   return <>
-    <Dropdown id="conversationList">
-      <Dropdown.Toggle variant="light" size="sm">
-        <span onClick={dropdownClicked}>{room.conversations.length} Conversations</span>
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        {room.conversations.map(convo => (
-          <Dropdown.Item key={convo.convoNumber} onClick={() => { onJoin(convo) }} >
-            {convo.roomTitle}
-            {convo.convoNumber === primaryConvoNumber &&
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id="mine">You're in this conversation now</Tooltip>}
-              >
-                <Badge variant="info">mine</Badge>
-              </OverlayTrigger>}
-            {convo.convoNumber !== primaryConvoNumber &&
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id="people">Click to join this conversation</Tooltip>}
-              >
-                <Badge variant="success" size={25}>join</Badge>
-              </OverlayTrigger>}
+  <h5>All Conversations</h5>
+    <div id="conversationList">
+      {room.conversations.map(convo => (
+        <div key={convo.convoNumber} onClick={() => { onJoin(convo) }} className="convoItem">
+          {convo.roomTitle}
+          {convo.convoNumber === primaryConvoNumber &&
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip id="people">People in this room {convo.participants.map(p => <div key={p.email}>{p.name}</div>)}</Tooltip>}
+              overlay={<Tooltip id="mine">You're in this conversation now</Tooltip>}
             >
-              <Badge variant="primary">{convo.participants.length}</Badge>
-            </OverlayTrigger>
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown >
+              <Badge variant="info">mine</Badge>
+            </OverlayTrigger>}
+          {convo.convoNumber !== primaryConvoNumber &&
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="people">Click to join this conversation</Tooltip>}
+            >
+              <Badge variant="success" size={25}>join</Badge>
+            </OverlayTrigger>}
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip id="people">People in this room {convo.participants.map(p => <div key={p.email}>{p.name}</div>)}</Tooltip>}
+          >
+            <Badge variant="primary">{convo.participants.length}</Badge>
+          </OverlayTrigger>
+        </div>
+      ))}
+    </div>
     <CreateConversation room={room} onCreate={onJoin} />
   </>
 };

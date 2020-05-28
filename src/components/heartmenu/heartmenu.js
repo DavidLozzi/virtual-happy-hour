@@ -36,7 +36,7 @@ const HeartMenu = () => {
       <Dropdown.Toggle as={heartButton} />
       <Dropdown.Menu>
         <Dropdown.Item onClick={donate}>Love it? Please Donate</Dropdown.Item>
-        <Dropdown.Item onClick={coffee}>Love it? Buy me a coffee</Dropdown.Item>
+        <Dropdown.Item onClick={coffee}>Like it? Buy me a coffee</Dropdown.Item>
         <Dropdown.Item onClick={feedback}>Share Feedback or Issue</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

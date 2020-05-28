@@ -27,6 +27,11 @@ const Room = ({ match }) => {
     setLoadRoom(true);
   };
 
+  const refreshPage = () => {
+    analytics.event('refresh', CATEGORIES.ERROR);
+    window.location.reload(true);
+  }
+
   useEffect(() => {
     if (roomName) {
       analytics.pageView(roomName, `room ${roomName}`);
@@ -50,9 +55,9 @@ const Room = ({ match }) => {
       let lobby = room.conversations.find(c => c.convoNumber === 0);
       if (!lobby) {
         lobby = createLobby();
-      } 
+      }
       RoomActions.addParticipant(lobby, me)(dispatch);
-      if(!room.hosts || room.hosts.length === 0) {
+      if (!room.hosts || room.hosts.length === 0) {
         RoomActions.addHost(roomName, me)(dispatch);
       }
     }
@@ -88,6 +93,13 @@ const Room = ({ match }) => {
               <Container fluid>
                 <Conversation convo={primaryConvo} room={room} />
               </Container>
+            </>
+          }
+          {loadRoom && !room.conversations[0] &&
+            <>
+              <h3>Uh oh...</h3>
+              <p>Don't you just hate it when this happens?</p>
+              <p><div onClick={refreshPage} rel="button" class="errorLink">Click here to try again</div></p>
             </>
           }
         </>

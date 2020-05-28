@@ -4,15 +4,16 @@
   height: 230px;
   width: 100%;
   overflow: scroll;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 
   .participant {
     display: inline-block;
     width: 90%;
+    text-align: left;
   }
 
   .badge {
-    margin-right: $spacer / 2;
+    margin-left: $spacer / 2;
   }
 
   .h5 {

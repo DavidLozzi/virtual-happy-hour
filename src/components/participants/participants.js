@@ -58,7 +58,7 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
 
   return (
     <div id="participants">
-      <p class="h5">Who's in {listTitle}</p>
+      <p class="h5">{listTitle}</p>
       <div className="text-right"><small className="text-muted">{participants.length} {participants.length === 1 ? 'person' : 'people'}</small></div>
       {
         participants
@@ -71,9 +71,9 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
               <Dropdown key={parti.email}>
                 <Dropdown.Toggle variant="light" size="sm">
                   <div className={`participant ${isHost ? 'host' : ''}`} onClick={showParticpantMenu} role="button">
+                    {parti.name}
                     {isHost && <Badge variant="primary">Host</Badge>}
                     {isMe && <Badge variant="info">Me</Badge>}
-                    {parti.name}
                   </div>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>

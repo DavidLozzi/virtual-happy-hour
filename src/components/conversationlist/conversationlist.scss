@@ -1,4 +1,19 @@
+@import "node_modules/bootstrap/scss/bootstrap";
+
 #conversationList {
+  max-height: 120px;
+  overflow: scroll;
+  font-size: 13px;
+
+  .convoItem {
+    padding: $spacer / 4;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f8f9fa
+    }
+  }
+
   .badge {
     margin: 0px 10px;
   }

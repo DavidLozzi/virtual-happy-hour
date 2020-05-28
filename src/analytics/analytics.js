@@ -2,13 +2,15 @@
 
 const GOOGLE_ID = 'UA-163356772-1';
 export const CATEGORIES = {
+  SITE: 'site',
   ROOM: 'room',
   USER: 'user',
   HOST_CONTROLS: 'hostcontrols',
   PARTICIPANTS: 'participants',
   CONVO: 'conversation',
   LINKS: 'links',
-  MESSAGES: 'messages'
+  MESSAGES: 'messages',
+  ERROR: 'error'
 }
 
 const analytics = {

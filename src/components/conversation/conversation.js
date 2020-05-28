@@ -56,7 +56,6 @@ const Conversation = ({ room, convo }) => {
               <Jitsi
                 options={{ ...convo }}
                 commands={defaultJitsiCommands}
-                mute={true}
                 convoNumber={convo.convoNumber}
               />
             }
@@ -68,7 +67,7 @@ const Conversation = ({ room, convo }) => {
               <Row noGutters>
                 <Col sm={12}><ConversationList room={room} onJoin={joinConvo} /></Col>
               </Row>
-              <Row noGutters><Participants participants={room.participants} listTitle={`Room: ${room.roomName}`} isRoom onJoin={joinConvo} /></Row>
+              <Row noGutters><Participants participants={room.participants} listTitle="Current Attendees" isRoom onJoin={joinConvo} /></Row>
             </Container>
           </Col>
         </Row>
