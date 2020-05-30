@@ -9,10 +9,9 @@ import './participants.scss';
 // TODO add option to make someone else a host
 // TODO add option to invite someone to join you in your convo, when press use modal to select a convo you're in
 
-const Participants = ({ participants, listTitle, isConvo = false, isRoom = false, onJoin }) => {
+const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
   const dispatch = useDispatch();
   const me = useSelector(state => state[MeName].participant);
-  const primaryConvoNumber = useSelector(state => state[MeName].primaryConvoNumber);
   const room = useSelector(state => state[RoomName].room);
   const [iAmHost, setIAmHost] = useState(false);
 
@@ -32,10 +31,10 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
   // TODO how to have the recipient click OK and join that convo?
   const invite = (participant) => {
     analytics.event('Invite to Convo', CATEGORIES.PARTICIPANTS);
-    const inviteToConvo = room.conversations.find(c => c.convoNumber === primaryConvoNumber);
+    const inviteToConvo = room.conversations.find(c => c.convoNumber === me.primaryConvoNumber);
     if (inviteToConvo) {
       const message = `You've been invited to ${inviteToConvo.roomTitle} by ${me.name}`;
-      const action = () => console.log("Accept");
+      const action = () => console.log("Accept"); // TODO support actions
       RoomActions.sendMessage(room.roomName, participant, message, action)(dispatch);
     } else {
       analytics.error('Invite to Convo', CATEGORIES.PARTICIPANTS, 'user not in a convo to invite');
@@ -58,14 +57,14 @@ const Participants = ({ participants, listTitle, isConvo = false, isRoom = false
 
   return (
     <div id="participants">
-      <p class="h5">{listTitle}</p>
+      <p className="h5">{listTitle}</p>
       <div className="text-right"><small className="text-muted">{participants.length} {participants.length === 1 ? 'person' : 'people'}</small></div>
       {
         participants
           .map((parti) => {
             const isHost = room.hosts.some(h => h.email === parti.email);
-            const inConvo = room.conversations.find(c => c.participants.some(p => p.email === parti.email));
-            const showInvite = isRoom && (inConvo && (inConvo.convoNumber !== primaryConvoNumber));
+            const inConvo = room.conversations.find(c => c.convoNumber === parti.primaryConvoNumber);
+            const showInvite = isRoom && (inConvo && (inConvo.convoNumber !== me.primaryConvoNumber));
             const isMe = parti.email === me.email;
             return (
               <Dropdown key={parti.email}>

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { name as MeName } from 'redux/api/me/me';
-import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
-import { Button, OverlayTrigger, Popover, Col, Modal, Dropdown } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Col, Modal, Dropdown, InputGroup } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 import AssignConvos from 'components/assignconvos/assignconvos';
 
@@ -54,7 +53,7 @@ const HostControls = () => {
 
   const sendMessage = () => {
     analytics.event('Send Message', CATEGORIES.HOST_CONTROLS);
-    RoomActions.sendMessageToAll(room.roomName, room.conversations[0].participants, `${message} from ${me.name}`)(dispatch);
+    RoomActions.sendMessageToAll(room.roomName, room.participants, `${message} from ${me.name}`)(dispatch);
     setShowMessageModal(false);
     setMessage('');
   };

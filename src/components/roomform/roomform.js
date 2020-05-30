@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import history from 'redux/history';
 
 import analytics, { CATEGORIES } from 'analytics/analytics';
-import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
-import Button from 'components/button/button';
+import {Button, InputGroup} from 'react-bootstrap';
 
 const RoomForm = () => {
   const [roomName, setRoomName] = useState('');
@@ -12,10 +11,6 @@ const RoomForm = () => {
     analytics.event('new room', 'room', roomName);
     if (roomName) history.push(`/${roomName}`);
   };
-
-  useEffect(() => {
-    analytics.pageView('roomform',CATEGORIES.SITE);
-  },[]);
 
   return (
       <InputGroup className="mb-3">

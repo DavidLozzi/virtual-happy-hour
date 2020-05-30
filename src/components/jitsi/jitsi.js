@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
-// import './external_api';
 import './jitsi.scss';
 // TODO create new shared component outside of this project
 
 export const JitsiSubject = new Subject();
 
-// TODO gotta support mobile browser
-const Jitsi = ({ options, commands, mute, className, convoNumber }) => {
+const Jitsi = ({ options, commands, mute, className, convoNumber, user }) => {
   const [jitsiApi, setJitsiApi] = useState();
 
   useEffect(() => {
@@ -20,6 +18,10 @@ const Jitsi = ({ options, commands, mute, className, convoNumber }) => {
     const newOptions = Object.assign(options,
       {
         roomName: options.roomTitle,
+        userInfo: {
+          email: user.email,
+          displayName: user.name
+        },
         generateRoom: false,
         parentNode: document.getElementById(options.convoName),
         interfaceConfigOverwrite: {

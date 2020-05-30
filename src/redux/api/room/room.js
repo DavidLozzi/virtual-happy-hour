@@ -1,4 +1,5 @@
 import mySocket from 'components/sockets/mySocket';
+import { checkAndUpdatePrimaryConvoNumber } from 'utils/me';
 
 export const API_CONVOS_LOAD_ROOM_SUCCESS = 'API_CONVOS_LOAD_ROOM_SUCCESS';
 export const API_CONVOS_ERROR = 'API_CONVOS_ERROR';
@@ -20,10 +21,11 @@ const initialState = {
 export const actions = {
   listen: () => async (dispatch) => {
     mySocket.on('RoomDetails', room => {
-      dispatch({ type: API_CONVOS_LOAD_ROOM_SUCCESS, room })
+      dispatch({ type: API_CONVOS_LOAD_ROOM_SUCCESS, room });
+      checkAndUpdatePrimaryConvoNumber();
     });
     mySocket.on('error', (error) => { // TODO alert users
-      console.log('socket error', error);
+      console.error('socket error', error);
       dispatch({ type: API_CONVOS_ERROR, error })
     });
   },
@@ -31,9 +33,13 @@ export const actions = {
     dispatch({ type: 'API_CONVOS_SET_ROOM' });
     mySocket.emit('SetRoom', roomName);
   },
-  addConvo: (conversation) => async (dispatch) => {
+  addConvo: (conversation, participant) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_ADD_CONVO' });
-    mySocket.emit('NewConvo', conversation);
+    mySocket.emit('NewConvo', { conversation, participant });
+  },
+  addMultiConvos: (roomName, conversations, assigned) => async (dispatch) => {
+    dispatch({ type: 'API_CONVOS_ADD_MULTI_CONVO' });
+    mySocket.emit('NewMultiConvo', { roomName, conversations, assigned });
   },
   addParticipant: (conversation, participant) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_ADD_PARTICIPANT' });
@@ -42,17 +48,12 @@ export const actions = {
   addHost: (roomName, participant, callBack) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_ADD_HOST' });
     mySocket.emit('AddHost', { roomName, participant }, (data) => {
-      if(callBack) callBack();
+      if (callBack) callBack();
     });
   },
   removeHost: (roomName, participant) => async (dispatch) => {
-    dispatch({ type: 'API_CONVOS_REMOVE_HOST'});
+    dispatch({ type: 'API_CONVOS_REMOVE_HOST' });
     mySocket.emit('RemoveHost', { roomName, participant });
-  },
-  removeMeFromThisConvo: (conversation, participant) => async (dispatch) => {
-    dispatch({ type: 'API_CONVOS_REMOVE_FROM_CONVO' });
-
-    mySocket.emit('RemoveMeFromThisConvo', { roomName: conversation.roomName, convoNumber: conversation.convoNumber, participant });
   },
   updateProperty: (roomName, property, value) => async (dispatch) => {
     dispatch({ type: 'API_CONVOS_UPDATE_PROPERTY' });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
-import { Button, OverlayTrigger, Popover, Dropdown, Modal, Form } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover, Dropdown, Modal, Form, Alert } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 import CONFIG from 'config';
 
@@ -19,7 +19,7 @@ const AssignConvos = () => {
 
   useEffect(() => {
     const lobbyConvo = room.conversations.find(c => c.convoNumber === 0);
-    const partiCount = lobbyConvo.participants.length;
+    const partiCount = room.participants.filter(p => p.primaryConvoNumber === 0).length;
     setLobby(lobbyConvo);
     setParticipantCount(partiCount);
   }, [room]);
@@ -39,7 +39,7 @@ const AssignConvos = () => {
   };
 
   const sortByconvoNumber = (a, b) => {
-    if (a.convoNumber > b.convoNumber) {
+    if (a.convoNumber < b.convoNumber) {
       return 1;
     } else {
       return -1;
@@ -53,43 +53,39 @@ const AssignConvos = () => {
       setStatusMessage('The number of people per conversation exceeds the number of people in the lobby');
       setIsProcessing(false);
     } else {
-      const peopleList = [...lobby.participants]; // maybe entire room instead?
+      const peopleList = room.participants.filter(p => p.primaryConvoNumber === 0);
       const convoNames = assignRoomList.split('\n');
-      let convoNumber = room.conversations.sort(sortByconvoNumber).splice(-1)[0].convoNumber + 10; // just feels right to go further out
-      const newConvoNumbers = [];
-      let newConvo;
+      let convoNumber = room.conversations.sort(sortByconvoNumber)[0].convoNumber + 50; // just feels right to go further out
+      const newConvos = [];
+      const assignedConvos = [];
 
       setStatusMessage('Creating conversations');
       for (let i = 1; i <= totalConvos; i++) {
-        if (peopleList.length === 0) break;
-        const randomPersonIndex = Math.round(Math.random()) * (peopleList.length - 1);
-        const randomPerson = peopleList.splice(randomPersonIndex, 1)[0];
         const randomConvoIndex = Math.round(Math.random()) * (convoNames.length - 1);
         const randomConvoName = convoNames.splice(randomConvoIndex, 1)[0];
-        console.log('create convo', randomPerson, randomConvoName, convoNumber);
-        newConvo = CONFIG.CONVERSATION_DEFAULTS(convoNumber, room.roomName, randomConvoName, [randomPerson])
-        newConvoNumbers.push(convoNumber);
+        // console.log('create convo', randomPerson, randomConvoName, convoNumber);
+        const newConvo = CONFIG.CONVERSATION_DEFAULTS(convoNumber, room.roomName, randomConvoName)
+        newConvos.push(newConvo);
         convoNumber++;
-        RoomActions.addConvo(newConvo)(dispatch);
         analytics.event('created_convo', CATEGORIES.HOST_CONTROLS, `${randomConvoName}`);
       }
 
       setStatusMessage('Assigning everyone to conversations');
-      for (let i = 0; i < newConvoNumbers.length; i++) {
+      for (let i = 0; i < newConvos.length; i++){
         if (peopleList.length === 0) break;
         let randomPersonIndex = 0;
         if (peopleList.length > 1) {
           randomPersonIndex = Math.round(Math.random()) * (peopleList.length - 1);
         }
         const randomPerson = peopleList.splice(randomPersonIndex, 1)[0];
-        console.log('add participant', newConvoNumbers[i], randomPerson);
-        RoomActions.addParticipant({ roomName: room.roomName, convoNumber: newConvoNumbers[i] }, randomPerson)(dispatch);
+        // console.log('add participant', newConvoNumbers[i], randomPerson);
+        assignedConvos.push({ ...randomPerson, primaryConvoNumber: newConvos[i].convoNumber});
         analytics.event('join_convo', CATEGORIES.HOST_CONTROLS);
-
-        if (i === newConvoNumbers.length - 1) {
-          i = 0;
-        }
+        if(i === (newConvos.length - 1)) i = -1;
       }
+
+      RoomActions.addMultiConvos(room.roomName, newConvos, assignedConvos)(dispatch);
+      
       setStatusMessage('');
       setIsProcessing(false);
       setShowAssignModal(false);
@@ -116,7 +112,7 @@ const AssignConvos = () => {
       >
         <Modal.Header closeButton>Assign all people in lobby to new conversations</Modal.Header>
         <Modal.Body>
-          <p>{statusMessage}</p>
+          {statusMessage && <Alert variant="info">{statusMessage}</Alert>}
           {!isProcessing &&
             <Form>
               <Form.Group controlId="formnumberofpeople">
@@ -134,15 +130,15 @@ const AssignConvos = () => {
                   {assignNumber < participantCount &&
                     <>
                       {assignNumber > 1 &&
-                        <>At {assignNumber} people, this will create {totalConvos} conversations.</>
+                        <Alert variant="info">With {assignNumber} people per conversation, this will create {totalConvos} conversations.</Alert>
                       }
                       {assignNumber === 1 &&
-                        <>C'mon, they can't talk by ourselves, select a number greater than 1 please.</>
+                        <Alert variant="danger">C'mon, they can't talk by themselves, select a number greater than 1 please.</Alert>
                       }
                     </>
                   }
                   {assignNumber >= participantCount &&
-                    <>The number of people per conversation exceeds the number of people in the lobby</>
+                    <Alert variant="danger">I was hoping for better numbers too, but the number of people per conversation exceeds the number of people in the lobby</Alert>
                   }
                 </Form.Text>
               </Form.Group>
@@ -156,7 +152,7 @@ const AssignConvos = () => {
                   onChange={e => setAssignRoomList(e.target.value)}
                   placeholder=""
                 />
-                <Form.Text className="text-muted">Enter conversation names one per line. These names can help spark conversations.</Form.Text>
+                <Form.Text className="text-muted">Enter conversation names one per line, they will be used randomly. These names can help spark conversations.</Form.Text>
               </Form.Group>
             </Form>
           }

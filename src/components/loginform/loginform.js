@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { Button, InputGroup } from 'react-bootstrap';
 
 import analytics, { CATEGORIES } from 'analytics/analytics';
-import Button from 'components/button/button';
-import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
 
 import { actions as MeActions } from 'redux/api/me/me';

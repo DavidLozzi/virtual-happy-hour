@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Dropdown, Alert } from 'react-bootstrap';
+import moment from 'moment';
 import { Bell, BellFill } from 'react-bootstrap-icons';
 import { name as MeName } from 'redux/api/me/me';
 import { name as RoomName } from 'redux/api/room/room';
@@ -66,7 +67,7 @@ const Messages = () => {
           <Dropdown.Toggle as={bellButton} />
           <Dropdown.Menu>
             {messages.map(message => (
-              <Dropdown.Item key={message.date}>{message.message} at {message.date}</Dropdown.Item>
+              <Dropdown.Item key={message.date}>{message.message}<small className="text-muted"> at {moment(message.date).format('h:mm a')}</small></Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>

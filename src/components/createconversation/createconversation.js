@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, InputGroup } from 'react-bootstrap';
 
 import { actions as RoomActions } from 'redux/api/room/room';
 
 import analytics, { CATEGORIES } from 'analytics/analytics';
-import InputGroup from 'components/inputgroup/inputgroup';
 import FormControl from 'components/formcontrol/formcontrol';
 import { name as MeName } from 'redux/api/me/me';
-import Button from 'components/button/button';
 
 import CONFIG from 'config';
 
@@ -38,7 +37,7 @@ const CreateConversation = ({ room, onCreate }) => {
       newConvoNumber = conversations.sort(sortByconvoNumber).splice(-1)[0].convoNumber + 1;
     }
 
-    return CONFIG.CONVERSATION_DEFAULTS(newConvoNumber, roomName, newConvoName, [me]);
+    return CONFIG.CONVERSATION_DEFAULTS(newConvoNumber, roomName, newConvoName);
   };
 
   const openCreateConvo = () => {
@@ -48,7 +47,7 @@ const CreateConversation = ({ room, onCreate }) => {
 
   const createNewConversationClick = () => {
     const convo = setConvoOptions();
-    RoomActions.addConvo(convo)(dispatch);
+    RoomActions.addConvo(convo, me)(dispatch);
     analytics.event('created_convo', CATEGORIES.CONVO, newConvoName);
     createRoomDone();
     if (onCreate) onCreate(convo);

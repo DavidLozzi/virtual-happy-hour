@@ -3,7 +3,7 @@ export default {
   URLS: {
     SOCKET: process.env.REACT_APP_SOCKET_URL
   },
-  CONVERSATION_DEFAULTS: (convoNumber, roomName, roomTitle, participants) => ({
+  CONVERSATION_DEFAULTS: (convoNumber, roomName, roomTitle) => ({
     height: 600,
     width: 800,
     convoNumber,
@@ -11,7 +11,6 @@ export default {
     roomName,
     loading: true,
     roomTitle,
-    roomCss: '',
-    participants: participants || []
+    roomCss: ''
   })
 }

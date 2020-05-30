@@ -3,15 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import CONFIG from 'config';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
-import { name as MeName, actions as MeActions } from 'redux/api/me/me';
+import { name as MeName } from 'redux/api/me/me';
 
 import LoginForm from 'components/loginform/loginform';
 import Conversation from 'components/conversation/conversation';
 import Header from 'components/header/header';
 
-import './room.scss';
 import { Container, Jumbotron } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
+
+import './room.scss';
 
 const Room = ({ match }) => {
   const dispatch = useDispatch();
@@ -28,15 +29,15 @@ const Room = ({ match }) => {
   };
 
   const refreshPage = () => {
-    analytics.event('refresh', CATEGORIES.ERROR);
+    analytics.error('page error', CATEGORIES.ROOM, 'refresh was pressed');
     window.location.reload(true);
   }
 
   useEffect(() => {
     if (roomName) {
-      analytics.pageView(roomName, `room ${roomName}`);
       RoomActions.setRoom(roomName)(dispatch);
       RoomActions.listen()(dispatch);
+      analytics.pageView(roomName, `room ${roomName}`);
     } else {
       analytics.pageView('none', 'no room');
     }
@@ -44,8 +45,8 @@ const Room = ({ match }) => {
 
   useEffect(() => {
     const createLobby = () => {
-      const lobbyConvo = CONFIG.CONVERSATION_DEFAULTS(0, roomName, `Lobby for ${roomName}`, [me]);
-      RoomActions.addConvo(lobbyConvo)(dispatch);
+      const lobbyConvo = CONFIG.CONVERSATION_DEFAULTS(0, roomName, `Lobby for ${roomName}`);
+      RoomActions.addConvo(lobbyConvo, me)(dispatch);
       RoomActions.addHost(roomName, me)(dispatch); // if this user is creating the lobby, they're the host
       analytics.nonInteractionEvent('lobby_created', CATEGORIES.ROOM, roomName);
       return lobbyConvo;
@@ -55,26 +56,32 @@ const Room = ({ match }) => {
       let lobby = room.conversations.find(c => c.convoNumber === 0);
       if (!lobby) {
         lobby = createLobby();
+      } else {
+        if (!room.hosts || room.hosts.length === 0) {
+          RoomActions.addHost(roomName, me)(dispatch);
+        }
       }
-      RoomActions.addParticipant(lobby, me)(dispatch);
-      if (!room.hosts || room.hosts.length === 0) {
-        RoomActions.addHost(roomName, me)(dispatch);
+      if (
+        !room.participants ||
+        !room.participants.some(p => p.email === me.email) || 
+        (room.participants.some(p => p.email === me.email) && !room.participants.some(p => p.id === me.id))
+        ) {
+        RoomActions.addParticipant(lobby, me)(dispatch);
       }
     }
-  }, [loadRoom, me, dispatch, roomName]);
+  }, [loadRoom, dispatch, roomName]);
 
   useEffect(() => {
     if (loadRoom) {
-      const myConvo = room.conversations.filter(c => c.participants.some(p => p.email === me.email));
-      if (myConvo && myConvo.length === 1) {
-        setPrimaryConvo(myConvo[0]);
-        MeActions.setPrimaryConvoNumber(myConvo[0].convoNumber)(dispatch);
-      } else { // if it happens, there was an oopsy, send to lobby
+      const myConvo = room.conversations.find(c => c.convoNumber === me.primaryConvoNumber);
+      if (myConvo) {
+        setPrimaryConvo(myConvo);
+      } else {
         setPrimaryConvo(room.conversations.find(c => c.convoNumber === lobbyNumber));
+        analytics.nonInteractionError('loadRoom', CATEGORIES.ROOM, 'invalid primary convo');
       }
     }
   }, [room, loadRoom, me])
-
 
   return (
     <div>
@@ -86,20 +93,24 @@ const Room = ({ match }) => {
           {!loadRoom &&
             <LoginForm roomName={roomName} onOpen={openRoom} />
           }
-          {
-            loadRoom && room.conversations[0] &&
+          {loadRoom &&
             <>
               <Header fluid />
               <Container fluid>
-                <Conversation convo={primaryConvo} room={room} />
+                {
+                  primaryConvo &&
+                  <>
+                    <Conversation convo={primaryConvo} room={room} />
+                  </>
+                }
+                {!primaryConvo &&
+                  <>
+                    <h3>Uh oh...</h3>
+                    <p>Don't you just hate it when this happens?</p>
+                    <p><div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div></p>
+                  </>
+                }
               </Container>
-            </>
-          }
-          {loadRoom && !room.conversations[0] &&
-            <>
-              <h3>Uh oh...</h3>
-              <p>Don't you just hate it when this happens?</p>
-              <p><div onClick={refreshPage} rel="button" class="errorLink">Click here to try again</div></p>
             </>
           }
         </>

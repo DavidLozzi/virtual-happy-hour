@@ -9,8 +9,7 @@ export const CATEGORIES = {
   PARTICIPANTS: 'participants',
   CONVO: 'conversation',
   LINKS: 'links',
-  MESSAGES: 'messages',
-  ERROR: 'error'
+  MESSAGES: 'messages'
 }
 
 const analytics = {
