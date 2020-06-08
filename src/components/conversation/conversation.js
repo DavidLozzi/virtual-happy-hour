@@ -30,7 +30,7 @@ const Conversation = ({ room, convo }) => {
   }, [room, convo]);
 
   const trackEvent = (action, convo) => {
-    analytics.event(action, CATEGORIES.CONVO, convo.convoName);
+    analytics.event(action, CATEGORIES.CONVO, convo.roomTitle);
   };
 
   const joinConvo = (convo) => {
@@ -45,7 +45,7 @@ const Conversation = ({ room, convo }) => {
     <>
       {!convo && <div>loading</div>}
       {convo &&
-        <Row id="conversation">
+        <Row id="conversation" noGutters>
           <Col md={collapseRight ? 12 : 9} >
             <div className="collapser" onClick={() => setCollapseRight(!collapseRight)}>
               {collapseRight ? <ChevronBarLeft /> : <ChevronBarRight />}

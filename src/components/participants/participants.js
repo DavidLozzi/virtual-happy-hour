@@ -61,6 +61,12 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
       <div className="text-right"><small className="text-muted">{participants.length} {participants.length === 1 ? 'person' : 'people'}</small></div>
       {
         participants
+          .sort((a, b) => {
+            if (a.name > b.name) {
+              return 1;
+            }
+            return -1; 
+          })
           .map((parti) => {
             const isHost = room.hosts.some(h => h.email === parti.email);
             const inConvo = room.conversations.find(c => c.convoNumber === parti.primaryConvoNumber);

@@ -63,9 +63,9 @@ const Room = ({ match }) => {
       }
       if (
         !room.participants ||
-        !room.participants.some(p => p.email === me.email) || 
+        !room.participants.some(p => p.email === me.email) ||
         (room.participants.some(p => p.email === me.email) && !room.participants.some(p => p.id === me.id))
-        ) {
+      ) {
         RoomActions.addParticipant(lobby, me)(dispatch);
       }
     }
@@ -96,21 +96,19 @@ const Room = ({ match }) => {
           {loadRoom &&
             <>
               <Header fluid />
-              <Container fluid>
-                {
-                  primaryConvo &&
-                  <>
-                    <Conversation convo={primaryConvo} room={room} />
-                  </>
-                }
-                {!primaryConvo &&
-                  <>
-                    <h3>Uh oh...</h3>
-                    <p>Don't you just hate it when this happens?</p>
-                    <p><div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div></p>
-                  </>
-                }
-              </Container>
+              {
+                primaryConvo &&
+                <>
+                  <Conversation convo={primaryConvo} room={room} />
+                </>
+              }
+              {!primaryConvo &&
+                <>
+                  <h3>Uh oh...</h3>
+                  <p>Don't you just hate it when this happens?</p>
+                  <p><div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div></p>
+                </>
+              }
             </>
           }
         </>

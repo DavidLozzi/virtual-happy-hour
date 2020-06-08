@@ -5,7 +5,7 @@ import './jitsi.scss';
 
 export const JitsiSubject = new Subject();
 
-const Jitsi = ({ options, commands, mute, className, convoNumber, user }) => {
+const Jitsi = ({ options, convoNumber, user }) => {
   const [jitsiApi, setJitsiApi] = useState();
 
   useEffect(() => {
@@ -17,13 +17,13 @@ const Jitsi = ({ options, commands, mute, className, convoNumber, user }) => {
     console.log('building jitsi');
     const newOptions = Object.assign(options,
       {
-        roomName: options.roomTitle,
+        roomName: `Virtual Happy Hour - ${options.roomTitle}`,
         userInfo: {
           email: user.email,
           displayName: user.name
         },
         generateRoom: false,
-        parentNode: document.getElementById(options.convoName),
+        parentNode: document.getElementById('play-here'),
         interfaceConfigOverwrite: {
           SHOW_JITSI_WATERMARK: false,
           SHOW_WATERMARK_FOR_GUESTS: false,
@@ -33,7 +33,7 @@ const Jitsi = ({ options, commands, mute, className, convoNumber, user }) => {
             'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
             'fodeviceselection', '-hangup', '-profile', '-info', 'chat', 'recording',
             '-livestreaming', '-etherpad', 'sharedvideo', 'settings', 'raisehand',
-            'videoquality', 'filmstrip', '-invite', '-feedback', 'stats', 'shortcuts',
+            'videoquality', 'filmstrip', '-invite', '-feedback', '-stats', 'shortcuts',
             'tileview', 'videobackgroundblur', 'download', 'help', '-mute-everyone'
           ],
           SETTINGS_SECTIONS: ['devices', 'language', '-moderator', 'profile', '-calendar'],
@@ -47,16 +47,16 @@ const Jitsi = ({ options, commands, mute, className, convoNumber, user }) => {
     const api = new JitsiMeetExternalAPI('meet.jit.si', newOptions);
 
     // api.addEventListener('audioMuteStatusChanged', ({ muted }) => JitsiSubject.next({ type: 'mute', convo: options }));
-    api.executeCommands(commands);
+    // api.executeCommands(commands);
 
-    const iframe = window.document.getElementById(options.convoName).getElementsByTagName('iframe')[0];
+    const iframe = window.document.getElementById('play-here').getElementsByTagName('iframe')[0];
     iframe.style = 'border: 0';
 
     // JitsiSubject.next({ type: 'new', options: newOptions, api });
 
     // JitsiSubject.subscribe(({ type, convo }) => {
     //   if (type === 'mute') {
-    //     if (convo.convoName !== options.roomName) {
+    //     if (convo.roomName !== options.roomName) {
     //       api.isAudioMuted().then(muted => {
     //         if (!muted) {
     //           api.executeCommand('toggleAudio');
@@ -69,7 +69,7 @@ const Jitsi = ({ options, commands, mute, className, convoNumber, user }) => {
   }, [convoNumber]);
 
   return (
-    <div id={options.convoName} className={`convo ${className} ${mute ? 'muted' : ''}`} />
+    <div id="play-here" className="convo" />
   )
 };
 

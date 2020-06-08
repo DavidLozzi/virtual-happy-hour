@@ -29,7 +29,7 @@ const Sockets = () => {
       Created {moment(createdDate).fromNow()}
       <div>Convos underway:<br />
         {convos && convos.map(c => (
-          <div key={c.convoNumber}>#{c.convoNumber}. {c.convoName} ({c.participants.length} peeps)</div>
+          <div key={c.convoNumber}>#{c.convoNumber}. {c.roomName} ({c.participants.length} peeps)</div>
         ))}
       </div>
       <div>

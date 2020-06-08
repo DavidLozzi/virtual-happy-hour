@@ -1,3 +1,5 @@
+import { v4 } from 'uuid';
+
 export default {
   ENV: process.env.REACT_APP_ENV,
   URLS: {
@@ -7,7 +9,6 @@ export default {
     height: 600,
     width: 800,
     convoNumber,
-    convoName: `lozzi-${roomName}-${convoNumber}`,
     roomName,
     loading: true,
     roomTitle,
