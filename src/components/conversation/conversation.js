@@ -60,7 +60,7 @@ const Conversation = ({ room, convo }) => {
             <Col md={3}>
               <Container fluid>
                 <Row noGutters><HostControls /></Row>
-                <Row noGutters><Participants participants={participantsList} listTitle={convo.roomTitle} /></Row>
+                {/* <Row noGutters><Participants participants={participantsList} listTitle={convo.roomTitle} /></Row> */}
                 <Row noGutters>
                   <Col sm={12}><ConversationList room={room} onJoin={joinConvo} /></Col>
                 </Row>

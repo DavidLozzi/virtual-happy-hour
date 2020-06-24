@@ -3,7 +3,7 @@
 #conversationList {
   max-height: 120px;
   overflow: scroll;
-  font-size: 13px;
+  font-size: 15px;
 
   .convoItem {
     padding: $spacer / 4;
@@ -15,6 +15,7 @@
   }
 
   .badge {
-    margin: 0px 10px;
+    font-size: 90%;
+    margin: 0px 0px 0px 10px;
   }
 }
