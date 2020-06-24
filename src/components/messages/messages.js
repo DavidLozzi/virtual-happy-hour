@@ -31,6 +31,8 @@ const Messages = () => {
 
   useEffect(() => {
     if (latestMessage) {
+      const notif = new Audio('/new_message.mp3');
+      notif.play();
       setTimeout(() => {
         setLatestMessage('');
       }, 4500)

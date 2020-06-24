@@ -42,7 +42,7 @@ const ConversationList = ({ room, onJoin }) => {
         )
       })}
     </div>
-    <CreateConversation room={room} onCreate={onJoin} />
+    <CreateConversation room={room} />
   </>
 };
 

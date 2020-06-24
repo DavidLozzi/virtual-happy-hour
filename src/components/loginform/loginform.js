@@ -29,6 +29,7 @@ const LoginForm = ({ roomName, onOpen }) => {
     setMyName(localStorage.getItem('myName'));
     setMyEmail(localStorage.getItem('myEmail'));
     document.getElementById('room_intro').remove();
+    window.scrollTo({ top: 500, behavior: 'smooth' });
   }, []);
 
   return (

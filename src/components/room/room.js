@@ -8,8 +8,9 @@ import { name as MeName } from 'redux/api/me/me';
 import LoginForm from 'components/loginform/loginform';
 import Conversation from 'components/conversation/conversation';
 import Header from 'components/header/header';
+import Help from 'components/help/help';
 
-import { Container, Jumbotron } from 'react-bootstrap';
+import { Jumbotron } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
 import './room.scss';
@@ -20,6 +21,8 @@ const Room = ({ match }) => {
   const me = useSelector(state => state[MeName].participant);
   const [loadRoom, setLoadRoom] = useState(false);
   const [primaryConvo, setPrimaryConvo] = useState();
+  const [updatePrimaryConvo, setUpdatePrimaryConvo] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   const roomName = match.params.roomName;
   const lobbyNumber = 0;
@@ -60,19 +63,22 @@ const Room = ({ match }) => {
         if (!room.hosts || room.hosts.length === 0) {
           RoomActions.addHost(roomName, me)(dispatch);
         }
+        if (
+          !room.participants ||
+          !room.participants.some(p => p.email === me.email) ||
+          (room.participants.some(p => p.email === me.email) && !room.participants.some(p => p.id === me.id))
+        ) {
+          RoomActions.addParticipant(lobby, me)(dispatch);
+        }
       }
-      if (
-        !room.participants ||
-        !room.participants.some(p => p.email === me.email) ||
-        (room.participants.some(p => p.email === me.email) && !room.participants.some(p => p.id === me.id))
-      ) {
-        RoomActions.addParticipant(lobby, me)(dispatch);
-      }
+      // setShowHelp(true);
+      setUpdatePrimaryConvo(true);
     }
   }, [loadRoom, dispatch, roomName]);
 
   useEffect(() => {
-    if (loadRoom) {
+    if (updatePrimaryConvo) {
+      if(!me || !me.name || !me.email) window.location.reload();
       const myConvo = room.conversations.find(c => c.convoNumber === me.primaryConvoNumber);
       if (myConvo) {
         setPrimaryConvo(myConvo);
@@ -81,7 +87,7 @@ const Room = ({ match }) => {
         analytics.nonInteractionError('loadRoom', CATEGORIES.ROOM, 'invalid primary convo');
       }
     }
-  }, [room, loadRoom, me])
+  }, [room, updatePrimaryConvo, me])
 
   return (
     <div>
@@ -98,9 +104,7 @@ const Room = ({ match }) => {
               <Header fluid />
               {
                 primaryConvo &&
-                <>
-                  <Conversation convo={primaryConvo} room={room} />
-                </>
+                <Conversation convo={primaryConvo} room={room} />
               }
               {!primaryConvo &&
                 <>
@@ -109,6 +113,7 @@ const Room = ({ match }) => {
                   <p><div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div></p>
                 </>
               }
+              {/* <Help show={showHelp} onHide={() => setShowHelp(false)} /> */}
             </>
           }
         </>
