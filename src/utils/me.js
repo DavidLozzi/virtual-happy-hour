@@ -5,8 +5,8 @@ import store from 'redux/store';
 export const checkAndUpdatePrimaryConvoNumber = () => {
   const me = store.getState()[MeName].participant;
   const room = store.getState()[RoomName].room;
-  if (room.participants.some(p => p.email === me.email)) {
-    const myNumber = room.participants.find(p => p.email === me.email).primaryConvoNumber;
+  if (room.participants.some(p => p.userId === me.userId)) {
+    const myNumber = room.participants.find(p => p.userId === me.userId).primaryConvoNumber;
     if (myNumber !== me.primaryConvoNumber) {
       MeActions.setPrimaryConvoNumber(myNumber)(store.dispatch);
     }

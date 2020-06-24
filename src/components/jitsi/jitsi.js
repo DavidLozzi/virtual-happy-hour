@@ -19,7 +19,7 @@ const Jitsi = ({ options, convoNumber, user }) => {
       {
         roomName: `Virtual Happy Hour - ${options.roomTitle}`,
         userInfo: {
-          email: user.email,
+          userId: user.userId,
           displayName: user.name
         },
         generateRoom: false,

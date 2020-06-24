@@ -65,8 +65,8 @@ const Room = ({ match }) => {
         }
         if (
           !room.participants ||
-          !room.participants.some(p => p.email === me.email) ||
-          (room.participants.some(p => p.email === me.email) && !room.participants.some(p => p.id === me.id))
+          !room.participants.some(p => p.userId === me.userId) ||
+          (room.participants.some(p => p.userId === me.userId) && !room.participants.some(p => p.id === me.id))
         ) {
           RoomActions.addParticipant(lobby, me)(dispatch);
         }
@@ -78,7 +78,7 @@ const Room = ({ match }) => {
 
   useEffect(() => {
     if (updatePrimaryConvo) {
-      if(!me || !me.name || !me.email) window.location.reload();
+      if(!me || !me.name || !me.userId) window.location.reload();
       const myConvo = room.conversations.find(c => c.convoNumber === me.primaryConvoNumber);
       if (myConvo) {
         setPrimaryConvo(myConvo);

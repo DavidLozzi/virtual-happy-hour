@@ -28,7 +28,7 @@ const CreateConversation = ({ room, onCreate }) => {
   const { conversations, roomName, enableConvo, hosts } = room;
 
   useEffect(() => {
-    setIAmHost(hosts.some(h => h.email === me.email));
+    setIAmHost(hosts.some(h => h.userId === me.userId));
   }, [hosts, me]);
 
   const setConvoOptions = () => {

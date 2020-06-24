@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { HeartFill } from 'react-bootstrap-icons';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
@@ -22,14 +22,19 @@ const HeartMenu = () => {
   }
 
   const heartButton = React.forwardRef(({ children, onClick }, ref) => (
-    <HeartFill
-      size={25}
-      className="icon"
-      onClick={(e) => {
-        e.preventDefault();
-        onClick(e);
-      }}
-    />
+    <OverlayTrigger
+      placement="bottom"
+      overlay={<Tooltip>Bug? Feedback? Click here to share!</Tooltip>}
+    >
+      <HeartFill
+        size={25}
+        className="icon"
+        onClick={(e) => {
+          e.preventDefault();
+          onClick(e);
+        }}
+      />
+    </OverlayTrigger>
   ))
   return (
     <Dropdown id="heartmenu" drop="left">

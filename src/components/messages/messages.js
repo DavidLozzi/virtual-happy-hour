@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Badge, Dropdown, Alert } from 'react-bootstrap';
+import { Badge, Dropdown, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import moment from 'moment';
 import { Bell, BellFill } from 'react-bootstrap-icons';
 import { name as MeName } from 'redux/api/me/me';
@@ -20,7 +20,7 @@ const Messages = () => {
 
   useEffect(() => {
     const myMessages = room.messages ? room.messages
-      .filter(m => m.to.email === me.email) : [];
+      .filter(m => m.to.userId === me.userId) : [];
 
     if (messageCount !== myMessages.length) {
       setMessageCount(myMessages.length);
@@ -40,21 +40,27 @@ const Messages = () => {
   }, [latestMessage]);
 
   const bellButton = React.forwardRef(({ children, onClick }, ref) => (
-    <div
-      class="bellWrapper"
-      onClick={(e) => {
-        analytics.event('bell', CATEGORIES.MESSAGES);
-        e.preventDefault();
-        onClick(e);
-      }}
-      rel="button">
-      <BellFill
-        size={25}
-        className="icon"
-      />
-      <Badge variant="danger" pill className="count">{messageCount}</Badge>
-    </div>
-  ))
+    <OverlayTrigger
+      placement="bottom"
+      overlay={<Tooltip>You've Got Mail</Tooltip>}
+    >
+      <div
+        class="bellWrapper"
+        onClick={(e) => {
+          analytics.event('bell', CATEGORIES.MESSAGES);
+          e.preventDefault();
+          onClick(e);
+        }}
+        rel="button">
+        <BellFill
+          size={25}
+          className="icon"
+        />
+        <Badge variant="danger" pill className="count">{messageCount}</Badge>
+      </div>
+    </OverlayTrigger>
+  ));
+
   return (
     <div id="messages">
       {latestMessage &&
@@ -64,19 +70,26 @@ const Messages = () => {
           {latestMessage}
         </Alert>
       }
-      {messageCount > 0 &&
-        <Dropdown drop="left">
-          <Dropdown.Toggle as={bellButton} />
-          <Dropdown.Menu>
-            {messages.map(message => (
-              <Dropdown.Item key={message.date}>{message.message}<small className="text-muted"> at {moment(message.date).format('h:mm a')}</small></Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
-      }
-      {messageCount === 0 &&
-        <Bell size={25} className="icon" />
-      }
+      <>
+        {messageCount > 0 &&
+          <Dropdown drop="left">
+            <Dropdown.Toggle as={bellButton} />
+            <Dropdown.Menu>
+              {messages.map(message => (
+                <Dropdown.Item key={message.date}>{message.message}<small className="text-muted"> at {moment(message.date).format('h:mm a')}</small></Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        }
+        {messageCount === 0 &&
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip>No Messages</Tooltip>}
+          >
+            <Bell size={25} className="icon" />
+          </OverlayTrigger>
+        }
+      </>
     </div>
   )
 }

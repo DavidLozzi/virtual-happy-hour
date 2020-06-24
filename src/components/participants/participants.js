@@ -47,7 +47,7 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
   }
 
   useEffect(() => {
-    if (room.hosts.some(h => h.email === me.email)) {
+    if (room.hosts.some(h => h.userId === me.userId)) {
       setIAmHost(true);
     } else {
       setIAmHost(false);
@@ -68,12 +68,12 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
             return -1; 
           })
           .map((parti) => {
-            const isHost = room.hosts.some(h => h.email === parti.email);
+            const isHost = room.hosts.some(h => h.userId === parti.userId);
             const inConvo = room.conversations.find(c => c.convoNumber === parti.primaryConvoNumber);
             const showInvite = isRoom && (inConvo && (inConvo.convoNumber !== me.primaryConvoNumber));
-            const isMe = parti.email === me.email;
+            const isMe = parti.userId === me.userId;
             return (
-              <Dropdown key={parti.email}>
+              <Dropdown key={parti.userId}>
                 <Dropdown.Toggle variant="light" size="sm">
                   <div className={`participant ${isHost ? 'host' : ''}`} onClick={showParticpantMenu} role="button">
                     {parti.name}

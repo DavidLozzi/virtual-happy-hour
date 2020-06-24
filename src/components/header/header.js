@@ -7,13 +7,13 @@ import logo from 'assets/images/logo_50.png';
 
 import Messages from 'components/messages/messages';
 import HeartMenu from 'components/heartmenu/heartmenu';
+import ExitButton from 'components/exitbutton/exitbutton';
 
 import './header.scss';
 
 const Header = () => {
   const room = useSelector(state => state[RoomName].room);
   const me = useSelector(state => state[MeName].participant);
-
 
   return (
     <Navbar bg="dark" variant="dark" id="header">
@@ -27,6 +27,7 @@ const Header = () => {
           <div id="me">
             {me.name}
           </div>
+          <ExitButton />
         </Navbar.Text>
       </Navbar.Collapse>
     </Navbar>

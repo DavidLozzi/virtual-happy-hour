@@ -1,5 +1,4 @@
 import mySocket from 'components/sockets/mySocket';
-import Room from '../../../components/room/room';
 
 const ME_SET_SUCCESS = 'ME_SET_SUCCESS';
 const ME_PRIMARY_CONVO = 'ME_PRIMARY_CONVO';
@@ -10,15 +9,15 @@ export const name = 'me';
 const initialState = {
   participant: {
     name: '',
-    email: '',
+    userId: '',
     id: '',
     primaryConvoNumber: 0
   }
 };
 
 export const actions = {
-  set: (myname, email) => async (dispatch) => {
-    dispatch({ type: ME_SET_SUCCESS, participant: { name: myname, email, id: mySocket.id } });
+  set: (myname, userId) => async (dispatch) => {
+    dispatch({ type: ME_SET_SUCCESS, participant: { name: myname, userId, id: mySocket.id } });
   },
   setPrimaryConvoNumber: (convoNumber = 0) => (dispatch) => {
     dispatch({ type: ME_PRIMARY_CONVO, convoNumber});
@@ -32,8 +31,8 @@ export function reducer(state = initialState, action) {
         ...state,
         participant: {
           ...state.participant,
-          primaryConvoNumber: action.room.participants.some(p => p.email === state.participant.email)
-            ? action.room.participants.find(p => p.email === state.participant.email).primaryConvoNumber
+          primaryConvoNumber: action.room.participants.some(p => p.userId === state.participant.userId)
+            ? action.room.participants.find(p => p.userId === state.participant.userId).primaryConvoNumber
             : 0
         }
       }

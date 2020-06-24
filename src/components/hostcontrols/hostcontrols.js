@@ -62,7 +62,7 @@ const HostControls = () => {
     <>
       {
         room.hosts
-          .find(h => h.email === me.email) &&
+          .find(h => h.userId === me.userId) &&
         <Col md={12} id="hostcontrols">
           <Dropdown>
             <Dropdown.Toggle variant="outline-dark">

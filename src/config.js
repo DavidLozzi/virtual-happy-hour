@@ -1,5 +1,3 @@
-import { v4 } from 'uuid';
-
 export default {
   ENV: process.env.REACT_APP_ENV,
   URLS: {

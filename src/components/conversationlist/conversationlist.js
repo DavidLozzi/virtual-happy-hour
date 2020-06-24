@@ -34,7 +34,7 @@ const ConversationList = ({ room, onJoin }) => {
               </OverlayTrigger>}
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip id="people">People in this room {participantList.map(p => <div key={p.email}>{p.name}</div>)}</Tooltip>}
+              overlay={<Tooltip id="people">People in this room {participantList.map(p => <div key={p.userId}>{p.name}</div>)}</Tooltip>}
             >
               <Badge variant="primary">{participantList.length}</Badge>
             </OverlayTrigger>
