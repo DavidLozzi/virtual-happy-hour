@@ -1,7 +1,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
 #conversationList {
-  max-height: 120px;
+  max-height: 350px;
   overflow: scroll;
   font-size: 15px;
 
@@ -18,4 +18,9 @@
     font-size: 90%;
     margin: 0px 0px 0px 10px;
   }
+}
+
+#createconversation {
+  padding-top: $spacer;
+  padding-bottom: $spacer;
 }

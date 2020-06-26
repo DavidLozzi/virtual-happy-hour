@@ -20,6 +20,7 @@ const Room = ({ match }) => {
   const room = useSelector(state => state[RoomName].room);
   const me = useSelector(state => state[MeName].participant);
   const [loadRoom, setLoadRoom] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [primaryConvo, setPrimaryConvo] = useState();
   const [updatePrimaryConvo, setUpdatePrimaryConvo] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -78,7 +79,7 @@ const Room = ({ match }) => {
 
   useEffect(() => {
     if (updatePrimaryConvo) {
-      if(!me || !me.name || !me.userId) window.location.reload();
+      if (!me || !me.name || !me.userId) window.location.reload();
       const myConvo = room.conversations.find(c => c.convoNumber === me.primaryConvoNumber);
       if (myConvo) {
         setPrimaryConvo(myConvo);
@@ -86,6 +87,7 @@ const Room = ({ match }) => {
         setPrimaryConvo(room.conversations.find(c => c.convoNumber === lobbyNumber));
         analytics.nonInteractionError('loadRoom', CATEGORIES.ROOM, 'invalid primary convo');
       }
+      setIsLoading(false);
     }
   }, [room, updatePrimaryConvo, me])
 
@@ -102,15 +104,22 @@ const Room = ({ match }) => {
           {loadRoom &&
             <>
               <Header fluid />
-              {
-                primaryConvo &&
-                <Conversation convo={primaryConvo} room={room} />
+              {isLoading &&
+                <h3>loading, please wait</h3>
               }
-              {!primaryConvo &&
+              {!isLoading &&
                 <>
-                  <h3>Uh oh...</h3>
-                  <p>Don't you just hate it when this happens?</p>
-                  <p><div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div></p>
+                  {
+                    primaryConvo &&
+                    <Conversation convo={primaryConvo} room={room} />
+                  }
+                  {!primaryConvo &&
+                    <>
+                      <h3>Uh oh...</h3>
+                      <p>Don't you just hate it when this happens?</p>
+                      <p><div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div></p>
+                    </>
+                  }
                 </>
               }
               {/* <Help show={showHelp} onHide={() => setShowHelp(false)} /> */}

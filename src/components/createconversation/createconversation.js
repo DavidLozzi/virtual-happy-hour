@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, InputGroup } from 'react-bootstrap';
+import { Button, InputGroup, Form, Col } from 'react-bootstrap';
 
 import { actions as RoomActions } from 'redux/api/room/room';
 
@@ -25,6 +25,7 @@ const CreateConversation = ({ room, onCreate }) => {
   const [createConvo, setCreateConvo] = useState(false);
   const [newConvoName, setNewConvoName] = useState(`Convo with ${me.name}`);
   const [iAmHost, setIAmHost] = useState(false);
+  const [validated, setValidated] = useState(false);
   const { conversations, roomName, enableConvo, hosts } = room;
 
   useEffect(() => {
@@ -42,15 +43,24 @@ const CreateConversation = ({ room, onCreate }) => {
 
   const openCreateConvo = () => {
     setCreateConvo(true);
+    setValidated(false);
     analytics.event('open_create_convo', CATEGORIES.CONVO);
   }
 
-  const createNewConversationClick = () => {
-    const convo = setConvoOptions();
-    RoomActions.addConvo(convo, me)(dispatch);
-    analytics.event('created_convo', CATEGORIES.CONVO, newConvoName);
-    createRoomDone();
-    if (onCreate) onCreate(convo);
+  const createNewConversationClick = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity()) {
+      const convo = setConvoOptions();
+      RoomActions.addConvo(convo, me)(dispatch);
+      analytics.event('created_convo', CATEGORIES.CONVO, newConvoName);
+      createRoomDone();
+      if (onCreate) onCreate(convo);
+    } else {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true);
   };
 
   const createRoomDone = () => {
@@ -63,26 +73,37 @@ const CreateConversation = ({ room, onCreate }) => {
   return (
     <>
       {(enableConvo || iAmHost) &&
-        <div className="col-md-12">
+        <Col md={12}>
           {!createConvo &&
             <Button onClick={openCreateConvo} variant="link">Create New Conversation</Button>
           }
           {createConvo &&
-            <>
-              <InputGroup className="mb-3">
-                <FormControl
-                  placeholder="Conversation Name"
-                  aria-label="Conversation Name"
-                  value={newConvoName}
-                  onChange={e => setNewConvoName(e.target.value)}
-                  onEnter={createNewConversationClick}
-                />
-              </InputGroup>
-              <Button variant="outline-secondary" onClick={createNewConversationClick}>Create</Button>
-              <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
-            </>
+            <div id="createconversation">
+              <Form noValidate validated={validated} onSubmit={createNewConversationClick}>
+                <Form.Row>
+                  <Form.Group controlId="validationConvoName">
+                    <InputGroup>
+                      <InputGroup.Prepend>
+                        <InputGroup.Text id="inputGroupPrepend">Name</InputGroup.Text>
+                      </InputGroup.Prepend>
+                      <FormControl
+                        type="text"
+                        placeholder="Conversation Name"
+                        aria-label="Conversation Name"
+                        value={newConvoName}
+                        onChange={e => setNewConvoName(e.target.value)}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">C'mon, you need to name it!</Form.Control.Feedback>
+                    </InputGroup>
+                  </Form.Group>
+                </Form.Row>
+                  <Button variant="outline-secondary" type="submit">Create</Button>
+                  <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
+              </Form>
+            </div>
           }
-        </div>
+        </Col>
       }
     </>
   )
