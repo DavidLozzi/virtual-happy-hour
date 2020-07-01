@@ -45,7 +45,7 @@ const Messages = () => {
       overlay={<Tooltip>You've Got Mail</Tooltip>}
     >
       <div
-        class="bellWrapper"
+        className="bellWrapper"
         onClick={(e) => {
           analytics.event('bell', CATEGORIES.MESSAGES);
           e.preventDefault();

@@ -23,7 +23,7 @@ const Room = ({ match }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [primaryConvo, setPrimaryConvo] = useState();
   const [updatePrimaryConvo, setUpdatePrimaryConvo] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
+  const [showHelp, setShowHelp] = useState(true);
 
   const roomName = match.params.roomName;
   const lobbyNumber = 0;
@@ -117,12 +117,12 @@ const Room = ({ match }) => {
                     <>
                       <h3>Uh oh...</h3>
                       <p>Don't you just hate it when this happens?</p>
-                      <p><div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div></p>
+                      <div onClick={refreshPage} rel="button" className="errorLink">Click here to try again</div>
                     </>
                   }
                 </>
               }
-              {/* <Help show={showHelp} onHide={() => setShowHelp(false)} /> */}
+              <Help show={showHelp} onHide={() => setShowHelp(false)} />
             </>
           }
         </>

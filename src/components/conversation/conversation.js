@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Container } from 'react-bootstrap';
 import { ChevronBarRight, ChevronBarLeft } from 'react-bootstrap-icons';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { name as MeName } from 'redux/api/me/me';
 import { actions as RoomActions } from 'redux/api/room/room';
@@ -65,6 +67,17 @@ const Conversation = ({ room, convo }) => {
                   <Col sm={12}><ConversationList room={room} onJoin={joinConvo} /></Col>
                 </Row>
                 <Row noGutters><Participants participants={room.participants} listTitle="Current Attendees" isRoom onJoin={joinConvo} /></Row>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                />
               </Container>
             </Col>
           }
