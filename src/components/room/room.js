@@ -75,6 +75,7 @@ const Room = ({ match }) => {
       // setShowHelp(true);
       setUpdatePrimaryConvo(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadRoom, dispatch, roomName]);
 
   useEffect(() => {
@@ -85,7 +86,6 @@ const Room = ({ match }) => {
         setPrimaryConvo(myConvo);
       } else {
         setPrimaryConvo(room.conversations.find(c => c.convoNumber === lobbyNumber));
-        analytics.nonInteractionError('loadRoom', CATEGORIES.ROOM, 'invalid primary convo');
       }
       setIsLoading(false);
     }

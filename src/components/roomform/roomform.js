@@ -8,7 +8,7 @@ import {Button, InputGroup} from 'react-bootstrap';
 const RoomForm = () => {
   const [roomName, setRoomName] = useState('');
   const goToRoom = () => {
-    analytics.event('new room', 'room', roomName);
+    analytics.event('new room', CATEGORIES.ROOM, roomName);
     if (roomName) history.push(`/${roomName}`);
   };
 

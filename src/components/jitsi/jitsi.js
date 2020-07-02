@@ -46,26 +46,10 @@ const Jitsi = ({ options, convoNumber, user }) => {
     // eslint-disable-next-line no-undef
     const api = new JitsiMeetExternalAPI('meet.jit.si', newOptions);
 
-    // api.addEventListener('audioMuteStatusChanged', ({ muted }) => JitsiSubject.next({ type: 'mute', convo: options }));
-    // api.executeCommands(commands);
-
     const iframe = window.document.getElementById('play-here').getElementsByTagName('iframe')[0];
     iframe.style = 'border: 0';
-
-    // JitsiSubject.next({ type: 'new', options: newOptions, api });
-
-    // JitsiSubject.subscribe(({ type, convo }) => {
-    //   if (type === 'mute') {
-    //     if (convo.roomName !== options.roomName) {
-    //       api.isAudioMuted().then(muted => {
-    //         if (!muted) {
-    //           api.executeCommand('toggleAudio');
-    //         }
-    //       });
-    //     }
-    //   }
-    // });
     setJitsiApi(api);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [convoNumber]);
 
   return (

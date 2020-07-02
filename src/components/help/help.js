@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { name as MeName } from 'redux/api/me/me';
-import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
+import { name as RoomName } from 'redux/api/room/room';
+import analytics, { CATEGORIES } from 'analytics/analytics';
 
 import './help.scss';
 
@@ -19,12 +20,28 @@ const Help = (props) => {
     setTotalPages(amIhost ? 4 : 3);
   }, [me, room]);
 
+  const previousPage = () => {
+    analytics.event(`Previous ${page}`, CATEGORIES.HELP, room.roomName);
+    setPage(page - 1);
+  };
+
+  const nextPage = () => {
+    analytics.event(`Next ${page}`, CATEGORIES.HELP, room.roomName);
+    setPage(page + 1);
+  };
+
+  const hideHelp = () => {
+    analytics.event(`Hide ${page}`, CATEGORIES.HELP, room.roomName);
+    if(props.onHide) props.onHide();
+  }
+
   return (
     <Modal
       size="lg"
       centered
       id="help"
       {...props}
+      onHide={hideHelp}
     >
       <Modal.Body>
         {page === 1 &&
@@ -69,12 +86,12 @@ const Help = (props) => {
       <Modal.Footer>
         <div className="pager">{page} / {totalPages}</div>
         {page > 1 &&
-          <Button onClick={() => setPage(page - 1)}>Previous</Button>
+          <Button onClick={previousPage}>Previous</Button>
         }
         {page < totalPages &&
-          <Button onClick={() => setPage(page + 1)}>Next</Button>
+          <Button onClick={nextPage}>Next</Button>
         }
-        <Button onClick={props.onHide}>Done</Button>
+        <Button onClick={hideHelp}>Done</Button>
       </Modal.Footer>
     </Modal>
   )

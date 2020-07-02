@@ -27,7 +27,7 @@ const Header = () => {
           <div id="me">
             {me.name}
           </div>
-          <ExitButton />
+          <ExitButton roomName={room.roomName} />
         </Navbar.Text>
       </Navbar.Collapse>
     </Navbar>

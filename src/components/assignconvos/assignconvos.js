@@ -15,12 +15,9 @@ const AssignConvos = () => {
   const [statusMessage, setStatusMessage] = useState('');
   const [totalConvos, setTotalConvos] = useState(0);
   const [participantCount, setParticipantCount] = useState(0);
-  const [lobby, setLobby] = useState();
 
   useEffect(() => {
-    const lobbyConvo = room.conversations.find(c => c.convoNumber === 0);
     const partiCount = room.participants.filter(p => p.primaryConvoNumber === 0).length;
-    setLobby(lobbyConvo);
     setParticipantCount(partiCount);
   }, [room]);
 

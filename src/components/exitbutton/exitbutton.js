@@ -1,11 +1,13 @@
 import React from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import analytics, { CATEGORIES } from 'analytics/analytics';
 import { ReactComponent as Exit } from 'assets/images/exit.svg';
 
 import './exitbutton.scss';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-const Header = () => {
+const Header = ({ roomName }) => {
   const leaveRoom = () => {
+    analytics.event('Exit', CATEGORIES.ROOM, roomName);
     window.location.href = "/";
   };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Container } from 'react-bootstrap';
 import { ChevronBarRight, ChevronBarLeft } from 'react-bootstrap-icons';
@@ -22,14 +22,7 @@ import './conversation.scss';
 const Conversation = ({ room, convo }) => {
   const dispatch = useDispatch();
   const me = useSelector(state => state[MeName].participant);
-  const [participantsList, setParticipantList] = useState([]);
   const [collapseRight, setCollapseRight] = useState(false);
-
-  useEffect(() => {
-    if (convo) {
-      setParticipantList(room.participants.filter(p => p.primaryConvoNumber === convo.convoNumber));
-    }
-  }, [room, convo]);
 
   const trackEvent = (action, convo) => {
     analytics.event(action, CATEGORIES.CONVO, convo.roomTitle);
@@ -62,7 +55,6 @@ const Conversation = ({ room, convo }) => {
             <Col md={3}>
               <Container fluid>
                 <Row noGutters><HostControls /></Row>
-                {/* <Row noGutters><Participants participants={participantsList} listTitle={convo.roomTitle} /></Row> */}
                 <Row noGutters>
                   <Col sm={12}><ConversationList room={room} onJoin={joinConvo} /></Col>
                 </Row>
