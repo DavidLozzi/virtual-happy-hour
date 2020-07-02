@@ -8,8 +8,9 @@ import {Button, InputGroup} from 'react-bootstrap';
 const RoomForm = () => {
   const [roomName, setRoomName] = useState('');
   const goToRoom = () => {
-    analytics.event('new room', CATEGORIES.ROOM, roomName);
-    if (roomName) history.push(`/${roomName}`);
+    const cleanRoomName = roomName.replace(/[^\w\s]/gi, '').trim().replace(/[\s]/gi, '-').toLowerCase();
+    analytics.event('new room', CATEGORIES.ROOM, cleanRoomName);
+    if (roomName) history.push(`/${cleanRoomName}`);
   };
 
   return (
