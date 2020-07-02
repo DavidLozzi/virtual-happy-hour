@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import mySocket from 'components/sockets/mySocket';
 
 const Sockets = () => {
@@ -26,7 +26,7 @@ const Sockets = () => {
   return (
     <div style={{ fontSize: '12px', marginTop: '50px' }}>
       {roomName} Room Details<br />
-      Created {moment(createdDate).fromNow()}
+      Created {dayjs(createdDate).fromNow()}
       <div>Convos underway:<br />
         {convos && convos.map(c => (
           <div key={c.convoNumber}>#{c.convoNumber}. {c.roomName} ({c.participants.length} peeps)</div>
