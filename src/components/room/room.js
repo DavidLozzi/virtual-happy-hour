@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CONFIG from 'config';
@@ -10,6 +10,7 @@ import Conversation from 'components/conversation/conversation';
 import Header from 'components/header/header';
 import Help from 'components/help/help';
 
+import { BrandContext } from 'brands/BrandContext';
 import { Jumbotron } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
@@ -17,6 +18,7 @@ import './room.scss';
 
 const Room = ({ match }) => {
   const dispatch = useDispatch();
+  const brand = useContext(BrandContext);
   const room = useSelector(state => state[RoomName].room);
   const me = useSelector(state => state[MeName].participant);
   const [loadRoom, setLoadRoom] = useState(false);
@@ -25,7 +27,7 @@ const Room = ({ match }) => {
   const [updatePrimaryConvo, setUpdatePrimaryConvo] = useState(false);
   const [showHelp, setShowHelp] = useState(true);
 
-  const roomName = match.params.roomName;
+  const roomName = `${brand.title} - ${match.params.roomName}`;
   const lobbyNumber = 0;
 
   const openRoom = () => {
@@ -38,18 +40,22 @@ const Room = ({ match }) => {
   }
 
   useEffect(() => {
-    if (roomName) {
+    window.document.title = brand.title;
+  }, [brand]);
+
+  useEffect(() => {
+    if (roomName && brand.title) {
       RoomActions.setRoom(roomName)(dispatch);
       RoomActions.listen()(dispatch);
       analytics.pageView(roomName, `room ${roomName}`);
     } else {
       analytics.pageView('none', 'no room');
     }
-  }, [roomName, dispatch])
+  }, [roomName, dispatch, brand.title])
 
   useEffect(() => {
     const createLobby = () => {
-      const lobbyConvo = CONFIG.CONVERSATION_DEFAULTS(0, roomName, `Lobby for ${roomName}`);
+      const lobbyConvo = CONFIG.CONVERSATION_DEFAULTS(0, roomName, 'Lobby', brand.title);
       RoomActions.addConvo(lobbyConvo, me)(dispatch);
       RoomActions.addHost(roomName, me)(dispatch); // if this user is creating the lobby, they're the host
       analytics.nonInteractionEvent('lobby_created', CATEGORIES.ROOM, roomName);
@@ -75,7 +81,7 @@ const Room = ({ match }) => {
       // setShowHelp(true);
       setUpdatePrimaryConvo(true);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadRoom, dispatch, roomName]);
 
   useEffect(() => {

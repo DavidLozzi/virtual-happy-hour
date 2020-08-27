@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, InputGroup, Form, Col } from 'react-bootstrap';
 
@@ -9,6 +9,7 @@ import FormControl from 'components/formcontrol/formcontrol';
 import { name as MeName } from 'redux/api/me/me';
 
 import CONFIG from 'config';
+import { BrandContext } from 'brands/BrandContext';
 
 
 const sortByconvoNumber = (a, b) => {
@@ -21,6 +22,7 @@ const sortByconvoNumber = (a, b) => {
 
 const CreateConversation = ({ room, onCreate }) => {
   const dispatch = useDispatch();
+  const brand = useContext(BrandContext);
   const me = useSelector(state => state[MeName].participant);
   const [createConvo, setCreateConvo] = useState(false);
   const [newConvoName, setNewConvoName] = useState(`Convo with ${me.name}`);
@@ -38,7 +40,7 @@ const CreateConversation = ({ room, onCreate }) => {
       newConvoNumber = conversations.sort(sortByconvoNumber).splice(-1)[0].convoNumber + 1;
     }
 
-    return CONFIG.CONVERSATION_DEFAULTS(newConvoNumber, roomName, newConvoName);
+    return CONFIG.CONVERSATION_DEFAULTS(newConvoNumber, roomName, newConvoName, brand.title);
   };
 
   const openCreateConvo = () => {
@@ -98,8 +100,8 @@ const CreateConversation = ({ room, onCreate }) => {
                     </InputGroup>
                   </Form.Group>
                 </Form.Row>
-                  <Button variant="outline-secondary" type="submit">Create</Button>
-                  <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
+                <Button variant="outline-secondary" type="submit">Create</Button>
+                <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
               </Form>
             </div>
           }

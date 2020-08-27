@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import { Button, OverlayTrigger, Popover, Dropdown, Modal, Form, Alert } from 'react-bootstrap';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 import CONFIG from 'config';
+import { BrandContext } from 'brands/BrandContext';
 
 const AssignConvos = () => {
   const dispatch = useDispatch();
+  const brand = useContext(BrandContext);
   const room = useSelector(state => state[RoomName].room);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignNumber, setAssignNumber] = useState(5);
@@ -61,14 +63,14 @@ const AssignConvos = () => {
         const randomConvoIndex = Math.round(Math.random()) * (convoNames.length - 1);
         const randomConvoName = convoNames.splice(randomConvoIndex, 1)[0];
         // console.log('create convo', randomPerson, randomConvoName, convoNumber);
-        const newConvo = CONFIG.CONVERSATION_DEFAULTS(convoNumber, room.roomName, randomConvoName)
+        const newConvo = CONFIG.CONVERSATION_DEFAULTS(convoNumber, room.roomName, randomConvoName, brand.title)
         newConvos.push(newConvo);
         convoNumber++;
         analytics.event('created_convo', CATEGORIES.HOST_CONTROLS, `${randomConvoName}`);
       }
 
       setStatusMessage('Assigning everyone to conversations');
-      for (let i = 0; i < newConvos.length; i++){
+      for (let i = 0; i < newConvos.length; i++) {
         if (peopleList.length === 0) break;
         let randomPersonIndex = 0;
         if (peopleList.length > 1) {
@@ -76,13 +78,13 @@ const AssignConvos = () => {
         }
         const randomPerson = peopleList.splice(randomPersonIndex, 1)[0];
         // console.log('add participant', newConvoNumbers[i], randomPerson);
-        assignedConvos.push({ ...randomPerson, primaryConvoNumber: newConvos[i].convoNumber});
+        assignedConvos.push({ ...randomPerson, primaryConvoNumber: newConvos[i].convoNumber });
         analytics.event('join_convo', CATEGORIES.HOST_CONTROLS);
-        if(i === (newConvos.length - 1)) i = -1;
+        if (i === (newConvos.length - 1)) i = -1;
       }
 
       RoomActions.addMultiConvos(room.roomName, newConvos, assignedConvos)(dispatch);
-      
+
       setStatusMessage('');
       setIsProcessing(false);
       setShowAssignModal(false);

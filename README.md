@@ -1,14 +1,14 @@
-# Virtual Happy Hour
+# Virtual Happy Hour / Remote Party
 
-## In beta!
+## In beta
 
 Coronavirus (COVID-19) have you down?
 
-Start a real virtual happy hour!
+Start a real virtual happy hour or remote party!
 
-Head to [VirtualHappyHour.app](https://virtualhappyhour.app) and check it out!
+Head to [RemoteParty.social](https://RemoteParty.social) and check it out!
 
-API located at https://github.com/DavidLozzi/virtual-happy-hour-api
+API located at <https://github.com/DavidLozzi/virtual-happy-hour-api>
 
 Like what you see? Consider a [donation](https://paypal.me/davidlozzi), or maybe [buy me a coffee](https://www.buymeacoffee.com/davidlozzi).
 
