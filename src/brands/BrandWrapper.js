@@ -6,7 +6,7 @@ const BrandWrapper = ({ children }) => {
 
   useEffect(() => {
     const loadBrand = async () => {
-      const theBrand = await import(`./${window.location.hostname}`);
+      const theBrand = await import(`./${window.location.hostname}.js`);
       setBrand(theBrand.default);
     }
 
