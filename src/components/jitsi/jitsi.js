@@ -27,7 +27,14 @@ const Jitsi = ({ options, convoNumber, user }) => {
           displayName: user.name
         },
         generateRoom: false,
+        enableCalendarIntegration: false,
+        prejoinPageEnabled: false,
+        gatherStats: false,
         parentNode: document.getElementById('play-here'),
+        localRecording: {
+          enabled: true,
+          format: 'flac'
+        },
         interfaceConfigOverwrite: {
           SHOW_JITSI_WATERMARK: false,
           SHOW_WATERMARK_FOR_GUESTS: false,
@@ -35,7 +42,7 @@ const Jitsi = ({ options, convoNumber, user }) => {
           APP_NAME: brand.title,
           TOOLBAR_BUTTONS: [
             'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-            'fodeviceselection', '-hangup', '-profile', '-info', 'chat', 'recording',
+            'fodeviceselection', '-hangup', '-profile', '-info', 'chat', '-recording', 'localrecording',
             '-livestreaming', '-etherpad', 'sharedvideo', 'settings', 'raisehand',
             'videoquality', 'filmstrip', '-invite', '-feedback', '-stats', 'shortcuts',
             'tileview', 'videobackgroundblur', 'download', 'help', '-mute-everyone'
