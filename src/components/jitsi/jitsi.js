@@ -20,32 +20,34 @@ const Jitsi = ({ options, convoNumber, user }) => {
     }
     console.log('building jitsi');
     const newOptions = Object.assign(options,
-      {
+      { // https://github.com/jitsi/handbook/blob/cd87aa7d693fc6491554bdd7a6c375536086d83d/docs/dev-guide/iframe.md
         roomName: `${brand.title} - ${options.roomTitle}`,
         userInfo: {
           userId: user.userId,
           displayName: user.name
         },
         generateRoom: false,
-        enableCalendarIntegration: false,
-        prejoinPageEnabled: false,
-        gatherStats: false,
         parentNode: document.getElementById('play-here'),
-        localRecording: {
-          enabled: true,
-          format: 'flac'
+        configOverwrite: { // https://github.com/jitsi/jitsi-meet/blob/master/config.js
+          gatherStats: false,
+          localRecording: {
+            enabled: true,
+            format: 'flac'
+          },
+          enableCalendarIntegration: false,
+          prejoinPageEnabled: false
         },
-        interfaceConfigOverwrite: {
+        interfaceConfigOverwrite: { // https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
           SHOW_JITSI_WATERMARK: false,
           SHOW_WATERMARK_FOR_GUESTS: false,
           SHOW_POWERED_BY: true,
           APP_NAME: brand.title,
           TOOLBAR_BUTTONS: [
             'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-            'fodeviceselection', '-hangup', '-profile', '-info', 'chat', '-recording', 'localrecording',
+            'fodeviceselection', '-hangup', '-profile', '-info', 'chat', '-recording',
             '-livestreaming', '-etherpad', 'sharedvideo', 'settings', 'raisehand',
             'videoquality', 'filmstrip', '-invite', '-feedback', '-stats', 'shortcuts',
-            'tileview', 'videobackgroundblur', 'download', 'help', '-mute-everyone'
+            'tileview', 'videobackgroundblur', 'download', 'help', '-mute-everyone','localrecording'
           ],
           SETTINGS_SECTIONS: ['devices', 'language', '-moderator', 'profile', '-calendar'],
           // MOBILE_APP_PROMO: false, // if this is enabled then it removes the app download need, but then errors

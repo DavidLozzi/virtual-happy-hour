@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { name as MeName } from 'redux/api/me/me';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
+import SendMessage from 'components/sendmessage/sendmessage';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
 import './participants.scss';
@@ -14,6 +15,8 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
   const me = useSelector(state => state[MeName].participant);
   const room = useSelector(state => state[RoomName].room);
   const [iAmHost, setIAmHost] = useState(false);
+  const [showSendMessage, setShowSendMessage] = useState(false);
+  const [sendMessageTo, setSendMessageTo] = useState('');
 
   const makeHost = (host) => {
     analytics.event('Make host', CATEGORIES.PARTICIPANTS);
@@ -26,6 +29,11 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
   const removeHost = (host) => {
     analytics.event('Remove host', CATEGORIES.PARTICIPANTS);
     RoomActions.removeHost(room.roomName, host)(dispatch);
+  }
+
+  const showMessageModal = (host) => {
+    setSendMessageTo(host);
+    setShowSendMessage(true);
   }
 
   // TODO how to have the recipient click OK and join that convo?
@@ -96,6 +104,7 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
                     <>
                       {iAmHost && !isHost && <Dropdown.Item onClick={() => makeHost(parti)}>Make a Host</Dropdown.Item>}
                       {iAmHost && isHost && <Dropdown.Item onClick={() => removeHost(parti)}>Remove as Host</Dropdown.Item>}
+                      {isHost && <Dropdown.Item onClick={() => showMessageModal(parti)}>Send host a message</Dropdown.Item>}
                       {showInvite && <Dropdown.Item onClick={() => invite(parti)}>Invite to Conversation</Dropdown.Item>}
                     </>
                   }
@@ -105,6 +114,11 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
           }
           )
       }
+      <SendMessage
+        sendTo={sendMessageTo}
+        showMessageModal={showSendMessage}
+        hideSendMessage={() => setShowSendMessage(false)}
+      />
     </div>
   )
 };

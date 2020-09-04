@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser';
 import { Badge, Dropdown, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import { Bell, BellFill } from 'react-bootstrap-icons';
@@ -67,7 +68,7 @@ const Messages = () => {
         <Alert
           variant="info"
         >
-          {latestMessage}
+          {ReactHtmlParser(latestMessage)}
         </Alert>
       }
       <>
@@ -76,7 +77,7 @@ const Messages = () => {
             <Dropdown.Toggle as={bellButton} />
             <Dropdown.Menu>
               {messages.map(message => (
-                <Dropdown.Item key={message.date}>{message.message}<small className="text-muted"> at {dayjs(message.date).format('h:mm a')}</small></Dropdown.Item>
+                <Dropdown.Item key={message.date}>{ReactHtmlParser(message.message)}<small className="text-muted"> at {dayjs(message.date).format('h:mm a')}</small></Dropdown.Item>
               ))}
             </Dropdown.Menu>
           </Dropdown>
