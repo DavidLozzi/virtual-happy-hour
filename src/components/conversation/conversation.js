@@ -30,7 +30,6 @@ const Conversation = ({ room, convo }) => {
 
   const joinConvo = (convo) => {
     if (convo) {
-      console.log("B");
       RoomActions.addParticipant(convo, me)(dispatch);
       trackEvent('join', convo);
     }

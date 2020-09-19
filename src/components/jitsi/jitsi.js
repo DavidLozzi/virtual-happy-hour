@@ -16,9 +16,8 @@ const Jitsi = ({ options, convoNumber, user }) => {
     if (jitsiApi) {
       jitsiApi.dispose();
       setJitsiApi();
-      console.log('destroyed jitsi');
     }
-    console.log('building jitsi');
+
     const newOptions = Object.assign(options,
       { // https://github.com/jitsi/handbook/blob/cd87aa7d693fc6491554bdd7a6c375536086d83d/docs/dev-guide/iframe.md
         roomName: `${brand.title} - ${options.roomTitle}`,

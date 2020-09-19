@@ -53,15 +53,20 @@ const AssignConvos = () => {
       setIsProcessing(false);
     } else {
       const peopleList = room.participants.filter(p => p.primaryConvoNumber === 0);
-      const convoNames = assignRoomList.split('\n');
+      let convoNames = assignRoomList.split('\n');
       let convoNumber = room.conversations.sort(sortByconvoNumber)[0].convoNumber + 50; // just feels right to go further out
       const newConvos = [];
       const assignedConvos = [];
+      let modifier = 0;
 
       setStatusMessage('Creating conversations');
       for (let i = 1; i <= totalConvos; i++) {
+        if(convoNames.length === 0 && assignRoomList.split('\n').length > 0) {
+          modifier++;
+          convoNames = assignRoomList.split('\n');
+        }
         const randomConvoIndex = Math.round(Math.random()) * (convoNames.length - 1);
-        const randomConvoName = convoNames.splice(randomConvoIndex, 1)[0];
+        const randomConvoName = `${convoNames.splice(randomConvoIndex, 1)[0]}${modifier > 0 ? ` ${modifier}` : ''}`;
         // console.log('create convo', randomPerson, randomConvoName, convoNumber);
         const newConvo = CONFIG.CONVERSATION_DEFAULTS(convoNumber, room.roomName, randomConvoName, brand.title)
         newConvos.push(newConvo);
@@ -151,7 +156,9 @@ const AssignConvos = () => {
                   onChange={e => setAssignRoomList(e.target.value)}
                   placeholder=""
                 />
-                <Form.Text className="text-muted">Enter conversation names one per line, they will be used randomly. These names can help spark conversations.</Form.Text>
+                <Form.Text className="text-muted">Enter conversation names one per line. They will be used randomly when creating new conversations.
+                  If there are not enough names they will be reused with a number appended to the name. Be creative, be generic, 
+                  be specific, whatever you want. These names can help spark conversations.</Form.Text>
               </Form.Group>
             </Form>
           }

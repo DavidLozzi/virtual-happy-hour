@@ -46,7 +46,7 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
       RoomActions.sendMessage(room.roomName, participant, message, action)(dispatch);
     } else {
       analytics.error('Invite to Convo', CATEGORIES.PARTICIPANTS, 'user not in a convo to invite');
-      console.log('user is not in a convo to invite');
+      console.error('user is not in a convo to invite');
     }
   }
 
