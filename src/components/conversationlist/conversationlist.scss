@@ -14,9 +14,17 @@
     }
   }
 
-  .badge {
+  .badge, .icon {
     font-size: 90%;
     margin: 0px 0px 0px 10px;
+  }
+
+  .icon {
+    font-size: 18px;
+  }
+
+  .persist {
+    font-size: 20px;
   }
 }
 

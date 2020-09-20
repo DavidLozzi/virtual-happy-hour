@@ -11,6 +11,7 @@ export default {
     loading: true,
     roomTitle,
     roomCss: '',
-    brandTitle
+    brandTitle,
+    persist: false
   })
 }

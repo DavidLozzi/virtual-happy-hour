@@ -55,7 +55,7 @@ const Room = ({ match }) => {
 
   useEffect(() => {
     const createLobby = () => {
-      const lobbyConvo = CONFIG.CONVERSATION_DEFAULTS(0, roomName, 'Lobby', brand.title);
+      const lobbyConvo = { ...CONFIG.CONVERSATION_DEFAULTS(0, roomName, 'Lobby', brand.title), persist: true };
       RoomActions.addConvo(lobbyConvo, me)(dispatch);
       RoomActions.addHost(roomName, me)(dispatch); // if this user is creating the lobby, they're the host
       analytics.nonInteractionEvent('lobby_created', CATEGORIES.ROOM, roomName);

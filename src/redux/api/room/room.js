@@ -44,6 +44,11 @@ export const actions = {
     dispatch({ type: 'API_CONVOS_ADD_MULTI_CONVO' });
     mySocket.emit('NewMultiConvo', { roomName, conversations, assigned });
   },
+  updateConvoProperty: (convo, property, value) => async (dispatch) => {
+    console.log('UpdateConvoProperty', convo.convoNumber, property, value);
+    dispatch({ type: 'API_CONVOS_UPDATE_PROPERTY' });
+    mySocket.emit('UpdateConvoProperty', { convo, property, value });
+  },
   addParticipant: (conversation, participant) => async (dispatch) => {
     // console.log('addParticipant', conversation, participant);
     dispatch({ type: 'API_CONVOS_ADD_PARTICIPANT' });
