@@ -8,17 +8,12 @@ import './heartmenu.scss';
 const HeartMenu = () => {
   const donate = () => {
     analytics.event('donate', CATEGORIES.LINKS);
-    window.open('https://paypal.me/davidlozzi');
-  }
-
-  const coffee = () => {
-    analytics.event('coffee', CATEGORIES.LINKS);
-    window.open('https://www.buymeacoffee.com/davidlozzi');
+    window.open('https://remoteparty.social/donate/');
   }
 
   const feedback = () => {
     analytics.event('feedback', CATEGORIES.LINKS);
-    window.open('https://forms.office.com/Pages/ResponsePage.aspx?id=eBIX0mRBW0qcSNE8o8S4uV77t6Bb_nVGrH1y5i3LkuBUQUFFRlRJMTlGVjNSUkdXRUlOUkgwNVlaRS4u');
+    window.open('https://remoteparty.social/contact/');
   }
 
   const heartButton = React.forwardRef(({ children, onClick }, ref) => (
@@ -40,9 +35,8 @@ const HeartMenu = () => {
     <Dropdown id="heartmenu" drop="left">
       <Dropdown.Toggle as={heartButton} />
       <Dropdown.Menu>
-        <Dropdown.Item onClick={donate}>Love it? Please Donate</Dropdown.Item>
-        <Dropdown.Item onClick={coffee}>Like it? Buy me a coffee</Dropdown.Item>
-        <Dropdown.Item onClick={feedback}>Share Feedback or Issue</Dropdown.Item>
+        <Dropdown.Item onClick={feedback}>Share Feedback or an Issue</Dropdown.Item>
+        <Dropdown.Item onClick={donate}>Please consider a donation</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   )
