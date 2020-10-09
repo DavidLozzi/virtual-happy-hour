@@ -59,7 +59,7 @@ const Conversation = ({ room, convo }) => {
                 </Row>
                 <Row noGutters>
                   <Col sm={12}>
-                    <Participants participants={room.participants} listTitle="Current Attendees" isRoom onJoin={joinConvo} />
+                    <Participants participants={room.participants} isRoom onJoin={joinConvo} />
                   </Col>
                 </Row>
                 <ToastContainer

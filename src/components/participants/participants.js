@@ -11,7 +11,7 @@ import './participants.scss';
 // TODO add option to make someone else a host
 // TODO add option to invite someone to join you in your convo, when press use modal to select a convo you're in
 
-const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
+const Participants = ({ participants, isRoom = false, onJoin }) => {
   const dispatch = useDispatch();
   const me = useSelector(state => state[MeName].participant);
   const room = useSelector(state => state[RoomName].room);
@@ -66,56 +66,58 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
 
   return (
     <div id="participants">
-      <p className="h5">{listTitle}</p>
+      <p className="h5">Current Attendees</p>
       <div className="text-right"><small className="text-muted">{participants.length} {participants.length === 1 ? 'person' : 'people'}</small></div>
-      {
-        participants
-          .sort((a, b) => {
-            if (a.name > b.name) {
-              return 1;
-            }
-            return -1; 
-          })
-          .map((parti) => {
-            const isHost = room.hosts.some(h => h.userId === parti.userId);
-            const inConvo = room.conversations.find(c => c.convoNumber === parti.primaryConvoNumber);
-            const showInvite = isRoom && (inConvo && (inConvo.convoNumber !== me.primaryConvoNumber));
-            const isMe = parti.userId === me.userId;
-            return (
-              <Dropdown key={parti.userId}>
-                <Dropdown.Toggle variant="light" size="sm">
-                  <div className={`participant ${isHost ? 'host' : ''}`} onClick={showParticpantMenu} role="button">
-                    <ParticipantIcon participant={parti} className="icon" />
-                    {parti.name}
-                    {isHost && <Badge variant="primary">Host</Badge>}
-                    {isMe && <Badge variant="info">Me</Badge>}
-                  </div>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <div className="dropdown-item">Talking in {inConvo && inConvo.roomTitle}
-                    {showInvite &&
-                      <OverlayTrigger
-                        placement="top"
-                        overlay={<Tooltip id="people">Click to join this conversation</Tooltip>}
-                      >
-                        <Badge variant="success" onClick={() => { onJoin(inConvo) }} size={25}>join</Badge>
-                      </OverlayTrigger>
+      <div className="scroller">
+        {
+          participants
+            .sort((a, b) => {
+              if (a.name > b.name) {
+                return 1;
+              }
+              return -1; 
+            })
+            .map((parti) => {
+              const isHost = room.hosts.some(h => h.userId === parti.userId);
+              const inConvo = room.conversations.find(c => c.convoNumber === parti.primaryConvoNumber);
+              const showInvite = isRoom && (inConvo && (inConvo.convoNumber !== me.primaryConvoNumber));
+              const isMe = parti.userId === me.userId;
+              return (
+                <Dropdown key={parti.userId}>
+                  <Dropdown.Toggle variant="light" size="sm">
+                    <div className={`participant ${isHost ? 'host' : ''}`} onClick={showParticpantMenu} role="button">
+                      <ParticipantIcon participant={parti} className="icon" />
+                      {parti.name}
+                      {isHost && <Badge variant="primary">Host</Badge>}
+                      {isMe && <Badge variant="info">Me</Badge>}
+                    </div>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <div className="dropdown-item">Talking in {inConvo && inConvo.roomTitle}
+                      {showInvite &&
+                        <OverlayTrigger
+                          placement="top"
+                          overlay={<Tooltip id="people">Click to join this conversation</Tooltip>}
+                        >
+                          <Badge variant="success" onClick={() => { onJoin(inConvo) }} size={25}>join</Badge>
+                        </OverlayTrigger>
+                      }
+                    </div>
+                    {!isMe &&
+                      <>
+                        {iAmHost && !isHost && <Dropdown.Item onClick={() => makeHost(parti)}>Make a Host</Dropdown.Item>}
+                        {iAmHost && isHost && <Dropdown.Item onClick={() => removeHost(parti)}>Remove as Host</Dropdown.Item>}
+                        {isHost && <Dropdown.Item onClick={() => showMessageModal(parti)}>Send host a message</Dropdown.Item>}
+                        {showInvite && <Dropdown.Item onClick={() => invite(parti)}>Invite to Conversation</Dropdown.Item>}
+                      </>
                     }
-                  </div>
-                  {!isMe &&
-                    <>
-                      {iAmHost && !isHost && <Dropdown.Item onClick={() => makeHost(parti)}>Make a Host</Dropdown.Item>}
-                      {iAmHost && isHost && <Dropdown.Item onClick={() => removeHost(parti)}>Remove as Host</Dropdown.Item>}
-                      {isHost && <Dropdown.Item onClick={() => showMessageModal(parti)}>Send host a message</Dropdown.Item>}
-                      {showInvite && <Dropdown.Item onClick={() => invite(parti)}>Invite to Conversation</Dropdown.Item>}
-                    </>
-                  }
-                </Dropdown.Menu>
-              </Dropdown>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )
+            }
             )
-          }
-          )
-      }
+        }
+      </div>
       <SendMessage
         sendTo={sendMessageTo}
         showMessageModal={showSendMessage}

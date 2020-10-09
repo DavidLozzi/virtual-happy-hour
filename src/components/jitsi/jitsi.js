@@ -39,7 +39,8 @@ const Jitsi = ({ options, convoNumber, user }) => {
             format: 'flac'
           },
           enableCalendarIntegration: false,
-          prejoinPageEnabled: false
+          prejoinPageEnabled: false,
+          disableDeepLinking: true
         },
         interfaceConfigOverwrite: { // https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
           SHOW_JITSI_WATERMARK: false,

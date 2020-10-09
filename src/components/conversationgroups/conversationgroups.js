@@ -119,7 +119,7 @@ const ConversationGroups = ({ room, onJoin }) => {
           <div key={convo.convoNumber} onClick={() => { onJoin(convo) }} className="convoItem">
             <div className={`circle-container convo${convo.convoNumber} ${convo.convoNumber === primaryConvoNumber ? 'mine' : ''}`}>
               <ul>
-                {participantList.map((p) => (
+                {participantList.filter((f, i) => i <= 12).map((p) => (
                   <OverlayTrigger
                     key={p.id}
                     placement="bottom"

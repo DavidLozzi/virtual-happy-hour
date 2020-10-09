@@ -1,9 +1,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
 #participants {
-  height: 250px;
   width: 100%;
-  overflow: scroll;
   margin-bottom: 20px;
 
   .participant {
@@ -25,5 +23,10 @@
     font-size: 20px;
     margin: 0px 7px;
     line-height: 0;
+  }
+
+  .scroller {
+    height: 250px;
+    overflow: scroll;
   }
 }
