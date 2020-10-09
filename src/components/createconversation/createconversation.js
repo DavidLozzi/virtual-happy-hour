@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, InputGroup, Form, Col } from 'react-bootstrap';
+import { Button, InputGroup, Form, Col, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { PlusCircle } from 'react-bootstrap-icons';
 
 import { actions as RoomActions } from 'redux/api/room/room';
 
@@ -11,6 +12,7 @@ import { name as MeName } from 'redux/api/me/me';
 import CONFIG from 'config';
 import { BrandContext } from 'brands/BrandContext';
 
+import './createconversation.scss';
 
 const sortByconvoNumber = (a, b) => {
   if (a.convoNumber > b.convoNumber) {
@@ -75,12 +77,18 @@ const CreateConversation = ({ room, onCreate }) => {
   return (
     <>
       {(enableConvo || iAmHost) &&
-        <Col md={12}>
+        <Col md={12} id="createconversation">
           {!createConvo &&
-            <Button onClick={openCreateConvo} variant="link">Create New Conversation</Button>
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip>Start a new conversation</Tooltip>}
+          >
+            <Button onClick={openCreateConvo} variant="link" className="create"><PlusCircle className="icon" /></Button>
+          </OverlayTrigger>
+            
           }
           {createConvo &&
-            <div id="createconversation">
+            <div className="createform">
               <Form noValidate validated={validated} onSubmit={createNewConversationClick}>
                 <Form.Row>
                   <Form.Group controlId="validationConvoName">
@@ -98,10 +106,10 @@ const CreateConversation = ({ room, onCreate }) => {
                       />
                       <Form.Control.Feedback type="invalid">C'mon, you need to name it!</Form.Control.Feedback>
                     </InputGroup>
+                    <Button variant="outline-secondary" type="submit">Create</Button>
+                    <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
                   </Form.Group>
                 </Form.Row>
-                <Button variant="outline-secondary" type="submit">Create</Button>
-                <Button variant="outline-secondary" onClick={createRoomDone}>Cancel</Button>
               </Form>
             </div>
           }

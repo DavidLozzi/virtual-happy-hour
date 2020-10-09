@@ -5,6 +5,7 @@ import { name as MeName } from 'redux/api/me/me';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import SendMessage from 'components/sendmessage/sendmessage';
 import analytics, { CATEGORIES } from 'analytics/analytics';
+import ParticipantIcon from 'components/participanticon/participanticon';
 
 import './participants.scss';
 // TODO add option to make someone else a host
@@ -84,6 +85,7 @@ const Participants = ({ participants, listTitle, isRoom = false, onJoin }) => {
               <Dropdown key={parti.userId}>
                 <Dropdown.Toggle variant="light" size="sm">
                   <div className={`participant ${isHost ? 'host' : ''}`} onClick={showParticpantMenu} role="button">
+                    <ParticipantIcon participant={parti} className="icon" />
                     {parti.name}
                     {isHost && <Badge variant="primary">Host</Badge>}
                     {isMe && <Badge variant="info">Me</Badge>}

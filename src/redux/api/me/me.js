@@ -16,8 +16,8 @@ const initialState = {
 };
 
 export const actions = {
-  set: (myname, userId) => async (dispatch) => {
-    dispatch({ type: ME_SET_SUCCESS, participant: { name: myname, userId, id: mySocket.id } });
+  set: (myname, userId, color) => async (dispatch) => {
+    dispatch({ type: ME_SET_SUCCESS, participant: { name: myname, userId, id: mySocket.id, color } });
   },
   setPrimaryConvoNumber: (convoNumber = 0) => (dispatch) => {
     dispatch({ type: ME_PRIMARY_CONVO, convoNumber});

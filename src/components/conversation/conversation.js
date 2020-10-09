@@ -11,7 +11,7 @@ import { actions as RoomActions } from 'redux/api/room/room';
 import Jitsi from 'components/jitsi/jitsi';
 import Participants from 'components/participants/participants';
 import HostControls from 'components/hostcontrols/hostcontrols';
-import ConversationList from 'components/conversationlist/conversationlist';
+import ConversationGroups from 'components/conversationgroups/conversationgroups';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
 import './conversation.scss';
@@ -55,9 +55,13 @@ const Conversation = ({ room, convo }) => {
               <Container fluid>
                 <Row noGutters><HostControls /></Row>
                 <Row noGutters>
-                  <Col sm={12}><ConversationList room={room} onJoin={joinConvo} /></Col>
+                  <Col sm={12}><ConversationGroups room={room} onJoin={joinConvo} /></Col>
                 </Row>
-                <Row noGutters><Participants participants={room.participants} listTitle="Current Attendees" isRoom onJoin={joinConvo} /></Row>
+                <Row noGutters>
+                  <Col sm={12}>
+                    <Participants participants={room.participants} listTitle="Current Attendees" isRoom onJoin={joinConvo} />
+                  </Col>
+                </Row>
                 <ToastContainer
                   position="bottom-right"
                   autoClose={5000}

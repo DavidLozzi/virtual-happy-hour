@@ -18,9 +18,14 @@ const Jitsi = ({ options, convoNumber, user }) => {
       setJitsiApi();
     }
 
+    const cleanName = () => {
+      const baseName = `${brand.title}-${options.roomName}-${options.roomTitle}`;
+      return baseName.replace(/[^a-z0-9A-Z]/ig, '');
+    }
+
     const newOptions = Object.assign(options,
       { // https://github.com/jitsi/handbook/blob/cd87aa7d693fc6491554bdd7a6c375536086d83d/docs/dev-guide/iframe.md
-        roomName: `${brand.title} - ${options.roomTitle}`,
+        roomName: cleanName(),
         userInfo: {
           userId: user.userId,
           displayName: user.name

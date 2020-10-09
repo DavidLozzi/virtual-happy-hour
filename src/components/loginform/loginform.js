@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, InputGroup, Form, Row, Col } from 'react-bootstrap';
 import { v4 } from 'uuid';
+import colors from 'utils/colors';
 
 import analytics, { CATEGORIES } from 'analytics/analytics';
 import FormControl from 'components/formcontrol/formcontrol';
@@ -18,7 +19,8 @@ const LoginForm = ({ roomName, onOpen }) => {
   const openRoom = (e) => {
     const form = e.currentTarget;
     if (form.checkValidity()) {
-      MeActions.set(myName, myUserId)(dispatch);
+      const myColor = colors[Math.floor(Math.random() * colors.length)];
+      MeActions.set(myName, myUserId, myColor)(dispatch);
       analytics.event('login', CATEGORIES.USER);
       localStorage.setItem('myName', myName);
       localStorage.setItem('myUserId', myUserId);

@@ -1,0 +1,104 @@
+@import "node_modules/bootstrap/scss/bootstrap";
+
+#conversationList {
+  max-height: 350px;
+  overflow: scroll;
+  flex-wrap: wrap;
+  font-size: 15px;
+  display: flex;
+
+  .convoItem {
+    cursor: pointer;
+    width: 120px;
+    height: 120px;
+    display: inline-block;
+  
+    .actions {
+      display: none;
+      position: absolute;
+
+      &.top {
+        top: -15px;
+      }
+      &.right {
+        right: -15px;
+      }
+      &.bottom {
+        bottom: -15px;
+      }
+      &.left {
+        left: -15px;
+      }
+    }
+
+    &:hover .actions {
+      display: inline-block;
+    }
+  }
+
+  .circle-container {
+    position: relative;
+    display: flex;
+    place-items: center;
+    width: 90px;
+    height: 90px;
+    margin: 15px;
+    background-color: $light;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    border-radius: 50%;
+
+    &.mine {
+      background-color: $green;
+      color: $white;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    ul > li {
+      display: block;
+      width: 1.5rem;
+      height: 1.5rem;
+      // border: .5rem solid #fc0;
+      background-color: $light;
+      color: $white;
+      font-weight: bold;
+      text-align: center;
+      // line-height: 2rem;
+      // padding-top: 1px;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: transform .5s cubic-bezier(.5, 0, .35, 1);
+      transform: translate(-50%, -50%);
+      transform-origin: center center;
+    }
+
+    .person {
+      font-size: 24px;
+    }
+  }
+
+  .badge, .icon {
+    font-size: 90%;
+    margin: 0px 0px 0px 10px;
+  }
+
+  .icon {
+    font-size: 18px;
+  }
+
+  .persist {
+    font-size: 20px;
+  }
+}
