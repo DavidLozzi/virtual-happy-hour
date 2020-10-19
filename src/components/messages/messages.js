@@ -54,7 +54,6 @@ const Messages = () => {
         }}
         rel="button">
         <BellFill
-          size={25}
           className="icon"
         />
         <Badge variant="danger" pill className="count">{messageCount}</Badge>
@@ -73,7 +72,7 @@ const Messages = () => {
       }
       <>
         {messageCount > 0 &&
-          <Dropdown drop="left">
+          <Dropdown drop="bottom">
             <Dropdown.Toggle as={bellButton} />
             <Dropdown.Menu>
               {messages.map(message => (
@@ -87,7 +86,7 @@ const Messages = () => {
             placement="bottom"
             overlay={<Tooltip>No Messages</Tooltip>}
           >
-            <Bell size={25} className="icon" />
+            <Bell className="icon" />
           </OverlayTrigger>
         }
       </>

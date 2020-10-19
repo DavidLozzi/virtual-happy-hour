@@ -13,16 +13,92 @@
 
   .collapser {
     position: absolute;
-    right: 0;
-    display: flex;
-    height: 100%;
-    background: $gray-100;
+    z-index: 1000;
+    left: 0px;
+    top: 49%;
+    display: none;
     align-items: center;
     cursor: pointer;
 
-    &:hover {
-      background: $gray-400;
+    .chevron {
+      color: $gray-500;
+      padding: 10px 0px;
+
+      &:hover {
+        background-color: $gray-600;
+        color: $white;
+      }
     }
+
+
+    @media only screen and (min-width: 768px) {
+      display: inline-block;
+    }
+  }
+
+  .max-height {
+    @media only screen and (min-width: 768px) {
+      height: 100%;
+    }
+  }
+
+  .mainCol, .rightCol {
+    transition: all 0.1s ease-in-out;
+  }
+
+  .mainCol {
+    width: 100%;
+    height: 50%;
+
+    @media only screen and (min-width: 768px) {
+      width: 83%;
+      height: auto;
+    }
+  }
+
+  .rightCol {
+    width: 100%;
+    padding: 0px 8px;
+    position: relative;
+
+    @media only screen and (min-width: 768px) {
+      width: 17%;
+    }
+  }
+
+  &.expandRight {
+    .collapser {
+      background-color: $gray-600;
+      color: $white;
+    }
+    .mainCol {
+      width: 70%;
+    }
+    .rightCol {
+      width: 30%;
+    }
+  }
+
+  .space-up-down {
+    display: flex;
+    flex-flow: column wrap;
+    align-content: space-between;
+    justify-content: space-between;
+    padding-top: 10px;
+
+    & > div {
+      width: 100%;
+    }
+
+    & > div::last-child {
+      position: relative;
+      bottom: 0;
+    }
+
+    @media only screen and (min-width: 768px) {
+      height: 100%;
+    }
+    
   }
 }
 

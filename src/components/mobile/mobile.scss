@@ -1,0 +1,17 @@
+#mobile {
+  &.hide {
+    display: none;
+
+    @media only screen and (min-width: 768px) {
+      display: inline-block;
+    }
+  }
+
+  &.show {
+    display: inline-block;
+
+    @media only screen and (min-width: 768px) {
+      display: none;
+    }
+  }
+}

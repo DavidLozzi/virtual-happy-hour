@@ -60,7 +60,7 @@ const Help = (props) => {
         {page === 2 &&
           <>
             <h3>Have a Conversation!</h3>
-            <p>On the right side, there is a little link called "Create New Conversation". Click that, give it a name
+            <p>On the right side, there is a green button with a plus in it. Click that, give it a name
               and viola, you're in a new conversation!</p>
             <p>Once there, you can click on someone elses name from the list and invite them to your conversation. They'll
             get a little notification and can join when they want.
@@ -70,7 +70,7 @@ const Help = (props) => {
         {page === 3 && isHost &&
           <>
             <h3>You're a host!</h3>
-            <p>As a host, you have some extra controls, obviously. Click the Host Controls button at the top right to explore
+            <p>As a host, you have some extra control. Click the settings gear button at the top right to explore
             your options. You can also make someone else a host just by clicking on their name.
             </p>
             <p>Feel the power!</p>

@@ -1,7 +1,16 @@
-.exit {
-  color: rgba(255, 255, 255, 0.5);
-  height: 25px;
-  width: 25px;
+#exitbutton {
   display: inline-block;
-  cursor: pointer;
+
+  .exit {
+    color: rgba(255, 255, 255, 0.5);
+    display: inline-block;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+
+    @media only screen and (min-width: 768px) {
+      height: 25px;
+      width: 25px;
+    }
+  }
 }

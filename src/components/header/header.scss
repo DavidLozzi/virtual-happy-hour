@@ -1,18 +1,60 @@
 #header {
-  .logo {
-    width: 40px;
+  // display: block;
+
+  // @media only screen and (min-width: 768px) {
+  //   display: flex;
+  // }
+  flex-flow: column;
+  @media only screen and (min-width: 768px) {
+    flex-flow: row;
+  }
+  .navbar-brand {
+    white-space: normal;
+    flex: 1;
+    // width: 100%;
+
+    @media only screen and (min-width: 768px) {
+      width: auto;
+    }
   }
 
   .icon {
     margin: 0 10px;
+    font-size: 20px;
+
+    @media only screen and (min-width: 768px) {
+      font-size: 25px;
+    }
   }
 
   #me {
     display: inline-block;
     margin-left: 10px;
+    font-size: 14px;
+    
+    @media only screen and (min-width: 768px) {
+      font-size: 16px;
+    }
   }
 
   .exit {
     margin-left: 10px;
   }
+  
+  @media only screen and (max-width: 767px) {
+    .dropdown-menu.show {
+      display: block;
+      position: fixed;
+      left: 0;
+      top: 100px;
+      width: 100%;
+    }
+    .dropdown-item {
+      margin: 5px 0px;
+      font-size: 16px;
+    }
+  }
 }
+  .tooltip.show {
+    display: none;
+  }

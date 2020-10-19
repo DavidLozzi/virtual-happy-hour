@@ -26,7 +26,18 @@
   }
 
   .scroller {
-    height: 250px;
+    max-height: 200px;
     overflow: scroll;
+  }
+
+  @media only screen and (max-width: 767px) {
+    .dropdown-menu.show {
+      display: block;
+      width: 100%;
+    }
+    .dropdown-item {
+      margin: 5px 0px;
+      font-size: 16px;
+    }
   }
 }

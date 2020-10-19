@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, InputGroup, Form, Col, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Button, InputGroup, Form, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { PlusCircle } from 'react-bootstrap-icons';
 
 import { actions as RoomActions } from 'redux/api/room/room';
@@ -27,7 +27,7 @@ const CreateConversation = ({ room, onCreate }) => {
   const brand = useContext(BrandContext);
   const me = useSelector(state => state[MeName].participant);
   const [createConvo, setCreateConvo] = useState(false);
-  const [newConvoName, setNewConvoName] = useState(`Convo with ${me.name}`);
+  const [newConvoName, setNewConvoName] = useState('');
   const [iAmHost, setIAmHost] = useState(false);
   const [validated, setValidated] = useState(false);
   const { conversations, roomName, enableConvo, hosts } = room;
@@ -77,7 +77,7 @@ const CreateConversation = ({ room, onCreate }) => {
   return (
     <>
       {(enableConvo || iAmHost) &&
-        <Col md={12} id="createconversation">
+        <div id="createconversation">
           {!createConvo &&
           <OverlayTrigger
             placement="bottom"
@@ -93,9 +93,9 @@ const CreateConversation = ({ room, onCreate }) => {
                 <Form.Row>
                   <Form.Group controlId="validationConvoName">
                     <InputGroup>
-                      <InputGroup.Prepend>
+                      {/* <InputGroup.Prepend>
                         <InputGroup.Text id="inputGroupPrepend">Name</InputGroup.Text>
-                      </InputGroup.Prepend>
+                      </InputGroup.Prepend> */}
                       <FormControl
                         type="text"
                         placeholder="Conversation Name"
@@ -113,7 +113,7 @@ const CreateConversation = ({ room, onCreate }) => {
               </Form>
             </div>
           }
-        </Col>
+        </div>
       }
     </>
   )

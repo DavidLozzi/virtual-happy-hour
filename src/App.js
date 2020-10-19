@@ -13,20 +13,25 @@ import BrandWrapper from 'brands/BrandWrapper';
 
 import Room from 'components/room/room';
 import RoomForm from 'components/roomform/roomform';
+import Browser from 'components/browser/browser';
 
 function App() {
-  return (
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <BrandWrapper>
-          <Switch>
-            <Route path={'/:roomName'} component={Room} />
-            <Route path={'/'} component={RoomForm} />
-          </Switch>
-        </BrandWrapper>
-      </ConnectedRouter>
-    </Provider>
-  );
+  if(window.navigator.userAgent.indexOf('MSIE') > -1 || !!window.navigator.userAgent.match(/Trident.*rv:11\./)) {
+    return <Browser />;
+  } else {
+    return (
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <BrandWrapper>
+            <Switch>
+              <Route path={'/:roomName'} component={Room} />
+              <Route path={'/'} component={RoomForm} />
+            </Switch>
+          </BrandWrapper>
+        </ConnectedRouter>
+      </Provider>
+    );
+  }
 }
 
 export default App;

@@ -3,23 +3,25 @@
 #createconversation {
   padding-top: $spacer;
   padding-bottom: $spacer;
-  text-align: right;
 
   .btn.btn-link.create {
     background: rgba(40,167,69,.5);
 
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
+    margin: 0px 15px;
     border-radius: 50%;
     display: inline-block;
 
     &:hover {
       background: rgba(40,167,69,1);
     }
+
+    .icon {
+      font-size: 40px;
+      color: $white;
+      margin: 0px;
+    }
   }
 
-  .icon {
-    font-size: 30px;
-    color: $white;
-  }
 }

@@ -32,7 +32,7 @@ const RoomForm = () => {
         </Row>
         <Row className="mt-5">
           <Col />
-          <Col xs={6}>
+          <Col xs={12} ms={6}>
             Type in your room name below to get started.
             <InputGroup className="mb-3">
               <FormControl

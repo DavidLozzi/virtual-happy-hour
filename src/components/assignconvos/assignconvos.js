@@ -101,7 +101,7 @@ const AssignConvos = () => {
     <>
       <OverlayTrigger
         trigger="hover"
-        placement="bottom"
+        placement="left"
         overlay={<Popover id="popover">
           <Popover.Content>
             Click to assign everyone to random conversations

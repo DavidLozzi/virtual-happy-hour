@@ -1,5 +1,13 @@
 #hostcontrols {
-  .btn {
-    font-size: 0.8rem;
+  display: inline;
+  cursor: pointer;
+
+  .dropleft {
+    display: inline;
+  }
+
+  .dropdown-menu,
+  .dropdown-menu a {
+    color: #212529;
   }
 }

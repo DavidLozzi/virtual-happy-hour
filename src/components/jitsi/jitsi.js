@@ -23,6 +23,45 @@ const Jitsi = ({ options, convoNumber, user }) => {
       return baseName.replace(/[^a-z0-9A-Z]/ig, '');
     }
 
+    // const newOptions = Object.assign(options,
+    //   { // https://github.com/jitsi/handbook/blob/cd87aa7d693fc6491554bdd7a6c375536086d83d/docs/dev-guide/iframe.md
+    //     roomName: cleanName(),
+    //     userInfo: {
+    //       userId: user.userId,
+    //       displayName: user.name
+    //     },
+    //     generateRoom: false,
+    //     parentNode: document.getElementById('play-here'),
+    //     configOverwrite: { // https://github.com/jitsi/jitsi-meet/blob/master/config.js
+    //       gatherStats: false,
+    //       localRecording: {
+    //         enabled: true,
+    //         format: 'flac'
+    //       },
+    //       enableCalendarIntegration: false,
+    //       prejoinPageEnabled: false,
+    //       disableDeepLinking: true
+    //     },
+    //     interfaceConfigOverwrite: { // https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
+    //       SHOW_JITSI_WATERMARK: false,
+    //       SHOW_WATERMARK_FOR_GUESTS: false,
+    //       SHOW_POWERED_BY: true,
+    //       APP_NAME: brand.title,
+    //       TOOLBAR_BUTTONS: [
+    //         'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+    //         'fodeviceselection', '-hangup', '-profile', '-info', 'chat', '-recording',
+    //         '-livestreaming', '-etherpad', 'sharedvideo', 'settings', 'raisehand',
+    //         'videoquality', 'filmstrip', '-invite', '-feedback', '-stats', 'shortcuts',
+    //         'tileview', 'videobackgroundblur', 'download', 'help', '-mute-everyone','localrecording'
+    //       ],
+    //       SETTINGS_SECTIONS: ['devices', 'language', '-moderator', 'profile', '-calendar'],
+    //       // MOBILE_APP_PROMO: false, // if this is enabled then it removes the app download need, but then errors
+    //       SUPPORT_URL: 'http://remoteparty.social',
+    //       SHOW_CHROME_EXTENSION_BANNER: false
+    //     }
+    //   }
+    // );
+
     const newOptions = Object.assign(options,
       { // https://github.com/jitsi/handbook/blob/cd87aa7d693fc6491554bdd7a6c375536086d83d/docs/dev-guide/iframe.md
         roomName: cleanName(),
@@ -45,18 +84,20 @@ const Jitsi = ({ options, convoNumber, user }) => {
         interfaceConfigOverwrite: { // https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
           SHOW_JITSI_WATERMARK: false,
           SHOW_WATERMARK_FOR_GUESTS: false,
-          SHOW_POWERED_BY: true,
+          SHOW_POWERED_BY: false,
+          SHOW_BRAND_WATERMARK: false,
           APP_NAME: brand.title,
           TOOLBAR_BUTTONS: [
-            'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+            'microphone', 'camera', '-closedcaptions', '-desktop', 'fullscreen',
             'fodeviceselection', '-hangup', '-profile', '-info', 'chat', '-recording',
-            '-livestreaming', '-etherpad', 'sharedvideo', 'settings', 'raisehand',
-            'videoquality', 'filmstrip', '-invite', '-feedback', '-stats', 'shortcuts',
-            'tileview', 'videobackgroundblur', 'download', 'help', '-mute-everyone','localrecording'
+            '-livestreaming', '-etherpad', 'sharedvideo', 'settings', '-raisehand',
+            'videoquality', 'filmstrip', '-invite', '-feedback', '-stats', '-shortcuts',
+            'tileview', '-videobackgroundblur', '-download', 'help', '-mute-everyone','-localrecording'
           ],
           SETTINGS_SECTIONS: ['devices', 'language', '-moderator', 'profile', '-calendar'],
-          // MOBILE_APP_PROMO: false, // if this is enabled then it removes the app download need, but then errors
-          SUPPORT_URL: 'http://remoteparty.social'
+          MOBILE_APP_PROMO: false, // if this is enabled then it removes the app download need, but then errors
+          SUPPORT_URL: 'http://remoteparty.social',
+          SHOW_CHROME_EXTENSION_BANNER: false
         }
       }
     );

@@ -22,7 +22,6 @@ const HeartMenu = () => {
       overlay={<Tooltip>Bug? Feedback? Click here to share!</Tooltip>}
     >
       <HeartFill
-        size={25}
         className="icon"
         onClick={(e) => {
           e.preventDefault();

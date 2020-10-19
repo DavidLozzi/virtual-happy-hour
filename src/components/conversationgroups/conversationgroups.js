@@ -87,41 +87,55 @@ const ConversationGroups = ({ room, onJoin }) => {
   }, [primaryConvoNumber]);
 
   const [convoCounts, setConvoCounts] = useState({});
+  const maxParticipantCnt = 12;
   useEffect(() => {
-    room.conversations.forEach(convo => {
-      const participantCount = room.participants.filter(p => p.primaryConvoNumber === convo.convoNumber).length;
-      const el = document.querySelector(`.circle-container.convo${convo.convoNumber} ul`);
-      if (!convoCounts[convo.convoNumber]) setConvoCounts(cc => ({...cc, [convo.convoNumber]: participantCount }));
+    setTimeout(() => {
+      room.conversations.forEach(convo => {
+        const participantCount = room.participants.filter(p => p.primaryConvoNumber === convo.convoNumber).length > maxParticipantCnt ? maxParticipantCnt : room.participants.filter(p => p.primaryConvoNumber === convo.convoNumber).length;
+        const el = document.querySelector(`.circle-container.convo${convo.convoNumber} ul`);
+        if (!convoCounts[convo.convoNumber]) setConvoCounts(cc => ({...cc, [convo.convoNumber]: participantCount }));
 
-      Array.from(el.children).forEach((li, idx) => {
-        const rot = idx * 360 / participantCount;
-        li.style.transform = `translate(-50%, -50%) rotate(${rot}deg) translateY(-2.7rem) rotate(-${rot}deg)`;
+        Array.from(el.children).forEach((li, idx) => {
+          const rot = idx * 360 / participantCount;
+          li.style.transform = `translate(-50%, -50%) rotate(${rot}deg) translateY(-2.7rem) rotate(-${rot}deg)`;
+        });
       });
-    });
+    }, 150);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room.conversations, room.participants]);
 
   return <>
-    <h5>All Conversations</h5>
+    <h5>Conversations</h5>
     <div id="conversationList">
       {room.conversations.map((convo) => {
         const participantList = room.participants.filter(p => p.primaryConvoNumber === convo.convoNumber);
+        const isMyConvo = convo.convoNumber === primaryConvoNumber;
+        const shortRoomName = convo.roomTitle.substring(0,17);
         const roomName = convo.roomTitle.length > 20 ? 
               <OverlayTrigger
+                key={convo.convoNumber}
                 placement="bottom"
-                overlay={<Tooltip id="roomname">{convo.roomTitle}</Tooltip>}
+                overlay={<Tooltip id="roomname">{!isMyConvo ? 'Click to join the conversation, ' : ''}{convo.roomTitle}</Tooltip>}
               >
-                <span>{convo.roomTitle.substring(0,17)}...</span>
+                <span>{shortRoomName}...</span>
               </OverlayTrigger>
-            : convo.roomTitle;
+            : 
+              !isMyConvo ? <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="roomname">Click to join the conversation</Tooltip>}
+              >
+                <span>{convo.roomTitle}</span>
+              </OverlayTrigger>
+              :
+              convo.roomTitle
   
         return (
           <div key={convo.convoNumber} onClick={() => { onJoin(convo) }} className="convoItem">
             <div className={`circle-container convo${convo.convoNumber} ${convo.convoNumber === primaryConvoNumber ? 'mine' : ''}`}>
               <ul>
-                {participantList.filter((f, i) => i <= 12).map((p) => (
+                {participantList.slice(0, maxParticipantCnt).map((p) => (
                   <OverlayTrigger
-                    key={p.id}
+                    key={p.userId}
                     placement="bottom"
                     overlay={<Tooltip id="participant">{p.name}</Tooltip>}
                   >
@@ -153,7 +167,7 @@ const ConversationGroups = ({ room, onJoin }) => {
               }
               </div>
               <div className='actions bottom right'>
-                {convo.convoNumber !== primaryConvoNumber &&
+                {!isMyConvo &&
                 <OverlayTrigger
                   placement="bottom"
                   overlay={<Tooltip id="join">Click to join this conversation</Tooltip>}
@@ -176,6 +190,7 @@ const ConversationGroups = ({ room, onJoin }) => {
           </div>
         )
       })}
+      {!editName && <CreateConversation room={room} /> }
     </div>
     {editName && 
     <div id="createconversation">
@@ -203,7 +218,6 @@ const ConversationGroups = ({ room, onJoin }) => {
       </Form>
     </div>
     }
-    {!editName && <CreateConversation room={room} /> }
   </>
 };
 

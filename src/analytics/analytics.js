@@ -10,7 +10,8 @@ export const CATEGORIES = {
   CONVO: 'conversation',
   LINKS: 'links',
   MESSAGES: 'messages',
-  HELP: 'help'
+  HELP: 'help',
+  ADMIN: 'admin'
 }
 
 const analytics = {

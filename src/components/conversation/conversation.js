@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Container } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { ChevronBarRight, ChevronBarLeft } from 'react-bootstrap-icons';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,19 +10,15 @@ import { actions as RoomActions } from 'redux/api/room/room';
 
 import Jitsi from 'components/jitsi/jitsi';
 import Participants from 'components/participants/participants';
-import HostControls from 'components/hostcontrols/hostcontrols';
 import ConversationGroups from 'components/conversationgroups/conversationgroups';
 import analytics, { CATEGORIES } from 'analytics/analytics';
 
 import './conversation.scss';
 
-// TODO enable jitsi on mobile https://community.jitsi.org/t/enable-mobile-browser-in-jitsi-meet/29076/11?u=davidlozzi
-// TODO can we edit the convo name?
-
 const Conversation = ({ room, convo }) => {
   const dispatch = useDispatch();
   const me = useSelector(state => state[MeName].participant);
-  const [collapseRight, setCollapseRight] = useState(false);
+  const [expandRight, setexpandRight] = useState(false);
 
   const trackEvent = (action, convo) => {
     analytics.event(action, CATEGORIES.CONVO, convo.roomTitle);
@@ -39,43 +35,40 @@ const Conversation = ({ room, convo }) => {
     <>
       {!convo && <div>loading</div>}
       {convo &&
-        <Row id="conversation" noGutters>
-          <Col md={collapseRight ? 12 : 9} >
-            <div className="collapser" onClick={() => setCollapseRight(!collapseRight)}>
-              {collapseRight ? <ChevronBarLeft /> : <ChevronBarRight />}
-            </div>
+        <Row id="conversation" noGutters className={expandRight ? 'expandRight' : ''}>
+          <div className="mainCol">
             <Jitsi
               options={{ ...convo }}
               convoNumber={convo.convoNumber}
               user={me}
             />
-          </Col>
-          {!collapseRight &&
-            <Col md={3}>
-              <Container fluid>
-                <Row noGutters><HostControls /></Row>
-                <Row noGutters>
-                  <Col sm={12}><ConversationGroups room={room} onJoin={joinConvo} /></Col>
-                </Row>
-                <Row noGutters>
-                  <Col sm={12}>
-                    <Participants participants={room.participants} isRoom onJoin={joinConvo} />
-                  </Col>
-                </Row>
-                <ToastContainer
-                  position="bottom-right"
-                  autoClose={5000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                />
-              </Container>
-            </Col>
-          }
+          </div>
+          <div className="rightCol max-height">
+            <div className="space-up-down">
+              <Row noGutters>
+                <Col sm={12}><ConversationGroups room={room} onJoin={joinConvo} /></Col>
+              </Row>
+              <Row noGutters>
+                <Col sm={12}>
+                  <Participants participants={room.participants} isRoom onJoin={joinConvo} />
+                </Col>
+              </Row>
+            </div>
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
+            <div className="collapser" onClick={() => setexpandRight(!expandRight)}>
+              <div className="chevron">{expandRight ? <ChevronBarRight /> : <ChevronBarLeft /> }</div>
+            </div>
+          </div>
         </Row>
       }
     </>

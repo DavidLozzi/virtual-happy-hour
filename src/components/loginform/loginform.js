@@ -41,7 +41,7 @@ const LoginForm = ({ roomName, onOpen }) => {
     <PublicWrapper>
       <Row className="mt-5">
         <Col />
-        <Col xs={6}>
+        <Col xs={12} md={6}>
           <h2>The room <strong>{roomName.split(' - ')[1]}</strong> is ready</h2>
           <div>Provide your name and press Join to get in on the fun!</div>
           <Form noValidate validated={validated} onSubmit={openRoom}>

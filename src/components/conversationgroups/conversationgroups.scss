@@ -1,7 +1,10 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
+.rightCol #conversationList {
+  justify-content: center;
+}
 #conversationList {
-  max-height: 350px;
+  max-height: 450px;
   overflow: scroll;
   flex-wrap: wrap;
   font-size: 15px;

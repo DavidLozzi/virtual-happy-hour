@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { name as MeName } from 'redux/api/me/me';
+import { name as MeName, actions as MeActions } from 'redux/api/me/me';
 import { name as RoomName, actions as RoomActions } from 'redux/api/room/room';
 import SendMessage from 'components/sendmessage/sendmessage';
 import analytics, { CATEGORIES } from 'analytics/analytics';
@@ -18,6 +18,7 @@ const Participants = ({ participants, isRoom = false, onJoin }) => {
   const [iAmHost, setIAmHost] = useState(false);
   const [showSendMessage, setShowSendMessage] = useState(false);
   const [sendMessageTo, setSendMessageTo] = useState('');
+  const isAdmin = window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('test=true') > -1;
 
   const makeHost = (host) => {
     analytics.event('Make host', CATEGORIES.PARTICIPANTS);
@@ -55,6 +56,13 @@ const Participants = ({ participants, isRoom = false, onJoin }) => {
     analytics.event('Show Menu', CATEGORIES.PARTICIPANTS);
   }
 
+  const impersonate = (participant) => {
+    if(isAdmin) {
+      MeActions.set(participant.name, participant.userId, participant.color)(dispatch);
+      analytics.event('impersonate', CATEGORIES.ADMIN);
+    }
+  }
+
   useEffect(() => {
     if (room.hosts.some(h => h.userId === me.userId)) {
       setIAmHost(true);
@@ -83,7 +91,7 @@ const Participants = ({ participants, isRoom = false, onJoin }) => {
               const showInvite = isRoom && (inConvo && (inConvo.convoNumber !== me.primaryConvoNumber));
               const isMe = parti.userId === me.userId;
               return (
-                <Dropdown key={parti.userId}>
+                <Dropdown key={parti.userId} drop="bottom">
                   <Dropdown.Toggle variant="light" size="sm">
                     <div className={`participant ${isHost ? 'host' : ''}`} onClick={showParticpantMenu} role="button">
                       <ParticipantIcon participant={parti} className="icon" />
@@ -109,6 +117,7 @@ const Participants = ({ participants, isRoom = false, onJoin }) => {
                         {iAmHost && isHost && <Dropdown.Item onClick={() => removeHost(parti)}>Remove as Host</Dropdown.Item>}
                         {isHost && <Dropdown.Item onClick={() => showMessageModal(parti)}>Send host a message</Dropdown.Item>}
                         {showInvite && <Dropdown.Item onClick={() => invite(parti)}>Invite to Conversation</Dropdown.Item>}
+                        {isAdmin && <Dropdown.Item onClick={() => impersonate(parti)}>Impersonate</Dropdown.Item>}
                       </>
                     }
                   </Dropdown.Menu>
