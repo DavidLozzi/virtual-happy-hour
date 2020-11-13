@@ -46,7 +46,6 @@ const Room = ({ match }) => {
       setRoomName(rmName);
       RoomActions.setRoom(rmName)(dispatch);
       RoomActions.listen()(dispatch);
-      // analytics.pageView(rmName, `room ${rmName}`);
     }
   }, [roomName, dispatch, brand, match.params.roomName])
 

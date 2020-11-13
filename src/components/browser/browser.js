@@ -5,11 +5,13 @@ import {Container, Row, Col} from 'react-bootstrap';
 import './browser.scss';
 
 const Browser = () => {
+  document.title = "Sorry, we don't support IE";
+
   return (
-    <Container>
+    <Container id="browser">
       <Row>
         <Col/>
-        <Col xs={8}>
+        <Col xs={12} ms={8}>
           <h2>RemoteParty.Social</h2>
           <div className="gif_wrapper">
           <iframe src="https://giphy.com/embed/864533yaFNqs8" title="R2D2" width="100%" height="100%" style={{position:'absolute'}} frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
