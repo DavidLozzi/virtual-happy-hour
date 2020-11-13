@@ -26,8 +26,8 @@ const Room = ({ match }) => {
   const [primaryConvo, setPrimaryConvo] = useState();
   const [updatePrimaryConvo, setUpdatePrimaryConvo] = useState(false);
   const [showHelp, setShowHelp] = useState(true);
+  const [roomName, setRoomName] = useState('');
 
-  const roomName = `${brand.title} - ${match.params.roomName}`;
   const lobbyNumber = 0;
 
   const openRoom = () => {
@@ -41,17 +41,14 @@ const Room = ({ match }) => {
 
   useEffect(() => {
     window.document.title = brand.title;
-  }, [brand]);
-
-  useEffect(() => {
-    if (roomName && brand.title) {
-      RoomActions.setRoom(roomName)(dispatch);
+    if (!roomName && match.params.roomName && brand.title) {
+      const rmName = `${brand.title} - ${match.params.roomName}`;
+      setRoomName(rmName);
+      RoomActions.setRoom(rmName)(dispatch);
       RoomActions.listen()(dispatch);
-      analytics.pageView(roomName, `room ${roomName}`);
-    } else {
-      analytics.pageView('none', 'no room');
+      // analytics.pageView(rmName, `room ${rmName}`);
     }
-  }, [roomName, dispatch, brand.title])
+  }, [roomName, dispatch, brand, match.params.roomName])
 
   useEffect(() => {
     const createLobby = () => {
