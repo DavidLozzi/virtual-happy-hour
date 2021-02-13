@@ -88,7 +88,7 @@ const Jitsi = ({ options, convoNumber, user }) => {
           SHOW_BRAND_WATERMARK: false,
           APP_NAME: brand.title,
           TOOLBAR_BUTTONS: [
-            'microphone', 'camera', '-closedcaptions', '-desktop', 'fullscreen',
+            'microphone', 'camera', '-closedcaptions', 'desktop', 'fullscreen',
             'fodeviceselection', '-hangup', '-profile', '-info', 'chat', '-recording',
             '-livestreaming', '-etherpad', 'sharedvideo', 'settings', '-raisehand',
             'videoquality', 'filmstrip', '-invite', '-feedback', '-stats', '-shortcuts',
